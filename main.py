@@ -13,7 +13,7 @@ def select_user_skills():
     return new_user_skills
 
 def create_user():
-    print "Creando un usuario"
+    print "Creating new user"
     user_name = raw_input("User name in github: ")
     user_pass = raw_input("Pasword in github: ")
     tasks_number = int(raw_input("How many task do you want to be recommend each time (5-20): "))
@@ -22,21 +22,21 @@ def create_user():
     user.set_skills(user_skills)
     return user
 
-def select_user():
-    print "Seleccionando un usuario"
+def select_test_user():
+    print "Configuring test user"
     user = User("","",0)
-    user.config_mock_user()
+    user.config_test_user()
     return user
 
 def menu_user():
     print "\n" + "-" * 22
     print " 1 - Create new user"
-    print " 2 - Select user\n"
+    print " 2 - Select test user\n"
     option = raw_input("Choose an option: ")
     if option == "1":
         user = create_user()
     elif option == "2":
-        user = select_user()
+        user = select_test_user()
     else:
         print "Option not valid."
         user = menu_user()
@@ -45,17 +45,6 @@ def menu_user():
 
 def select_project():
     return "Adavideo/test-project"
-    print "1- Brown Dispatcher"
-    print "2- IPFS"
-    print "3- Test project"
-    option = raw_input("Choose an option: ")
-    if option == "1":
-        project = "llopv/BrownDispatcher"
-    elif option == "2":
-        project = "ipfs/go-ipfs"
-    else:
-        project = "Adavideo/test-project"
-    return project
 
 def menu_tasks(user, project):
     print "-" * 50 + "\n"
@@ -75,7 +64,7 @@ def menu_tasks(user, project):
         print "Sorry. No tasks."
 
 def main_menu():
-    user = select_user() # menu_user()
+    user =  menu_user()
     project = select_project()
     print "The user is %s. The project is %s." % (user.name, project)
     menu_tasks(user, project)

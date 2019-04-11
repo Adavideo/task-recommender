@@ -20,9 +20,9 @@ class User(object):
             self.skills_thresholds[skill] = self.calculate_threshold(initial_skills[skill])
             #print "Umbral de %s: %f" % (skill, self.skills_thresholds[skill])
 
-    def config_mock_user(self):
-        self.name = "nymeria"
-        self.password = "000000000"
+    def config_test_user(self):
+        self.name = "adaTestUser"
+        self.password = "c^U5yfAsuqxYn1XO"
         self.tasks_number = 5
         mock_skills = {"javascript": False, "css": False, "python": True, "django": True, "html": True}
         self.set_skills(mock_skills)
