@@ -1,8 +1,16 @@
 from user import User
 from recommender import recommend_tasks
 from task import Task
+from Config import Config
 
 skills = ["javascript", "css", "python", "django", "html"]
+
+def load_default_config():
+    config = Config()
+    user_name, password, project = config.getConfig()
+    user = User(user_name,password,5)
+    user.config_test_user()
+    return (user, project)
 
 def select_user_skills():
     print "Let's config the programming languages you know. This will help filter the tasks to recommend you."
@@ -22,30 +30,6 @@ def create_user():
     user.set_skills(user_skills)
     return user
 
-def select_test_user():
-    print "Configuring test user"
-    user = User("","",0)
-    user.config_test_user()
-    return user
-
-def menu_user():
-    print "\n" + "-" * 22
-    print " 1 - Create new user"
-    print " 2 - Select test user\n"
-    option = raw_input("Choose an option: ")
-    if option == "1":
-        user = create_user()
-    elif option == "2":
-        user = select_test_user()
-    else:
-        print "Option not valid."
-        user = menu_user()
-    print "-" * 22 + "\n"
-    return user
-
-def select_project():
-    return "Adavideo/test-project"
-
 def menu_tasks(user, project):
     print "-" * 50 + "\n"
     print "Recomending tasks from project %s for the user %s" % (project, user.name)
@@ -64,9 +48,21 @@ def menu_tasks(user, project):
         print "Sorry. No tasks."
 
 def main_menu():
-    user =  menu_user()
-    project = select_project()
-    print "The user is %s. The project is %s." % (user.name, project)
-    menu_tasks(user, project)
+    user, project = load_default_config()
+    option = ""
+    while (option != "3"):
+        print "The user is %s. The project is %s." % (user.name, project)
+        print "\n" + "-" * 22
+        print " 1 - Change user"
+        print " 2 - Obtain recomendations"
+        print " 3 - Exit\n"
+        option = raw_input("Choose an option: ")
+        if option == "1":
+            user = create_user()
+        elif option == "2":
+            menu_tasks(user, project)
+        elif option != "3":
+            print "Option not valid."
+        print "-" * 22 + "\n"
 
 main_menu()

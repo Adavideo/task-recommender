@@ -1,0 +1,6 @@
+[Credentials]
+user=USER
+pass=PASSWORD
+
+[Project]
+name=ipfs/go-ipfs
