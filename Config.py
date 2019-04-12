@@ -10,6 +10,7 @@ class Config:
             self.user = config['Credentials']['user']
             self.password = config['Credentials']['pass']
             self.project = config['Project']['name']
+            self.skills_list = config['Skills']['list']
         except KeyError:
             raise Exception("Config file needed or malformed. Please, copy and fill config-default.")
 

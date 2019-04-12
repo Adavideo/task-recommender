@@ -3,10 +3,13 @@ from recommender import recommend_tasks
 from task import Task
 from Config import Config
 
-skills = ["javascript", "css", "python", "django", "html"]
+skills = []
 
 def load_default_config():
     config = Config()
+    skills = config.skills_list
+    print "Skill list:"
+    print skills
     user_name, password, project = config.getConfig()
     user = User(user_name,password,5)
     user.config_test_user()
