@@ -13,9 +13,10 @@ class Config:
             user_name = config['Credentials']['user']
             password = config['Credentials']['pass']
             skills = config['Skills']['list'].split(",")
+            tasks_number = config['Tasks']['tasks_number']
         except KeyError:
             raise Exception("Config file needed or malformed. Please, copy and fill config-default.")
-        self.user = User(user_name,password,5)
+        self.user = User(user_name,password,tasks_number)
         self.user.config_test_user(skills)
 
     def get_skills(self):

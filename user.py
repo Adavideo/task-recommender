@@ -20,6 +20,5 @@ class User(object):
             #print "Umbral de %s: %f" % (skill, self.skills_thresholds[skill])
 
     def config_test_user(self, skills):
-        self.tasks_number = 5
         mock_skills = {skills[0]: False, skills[1]: False, skills[2]: True, skills[3]: True, skills[4]: True}
         self.initialize_skills(skills, mock_skills)
