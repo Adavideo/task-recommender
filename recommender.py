@@ -3,8 +3,6 @@ import random
 from githubConnector import import_tasks_from_github
 
 
-skills = ["javascript", "css", "python", "django", "html"]
-
 def tasks_importer(project, user):
     tasks_list = import_tasks_from_github(project, user)
     return tasks_list

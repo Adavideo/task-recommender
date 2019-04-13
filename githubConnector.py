@@ -1,7 +1,6 @@
 from task import Task
 from github import Github
 import random
-skills = ["javascript", "css", "python", "django", "html"]
 
 def tasks_mockup(tasks_number):
     tasks_list = []
@@ -12,7 +11,7 @@ def tasks_mockup(tasks_number):
         tasks_list.append(task)
     return tasks_list
 
-def extract_skills_from_labels(labels):
+def extract_skills_from_labels(labels, skills):
     for label in labels:
         if label.name in skills:
             return label.name
@@ -26,7 +25,7 @@ def import_tasks_from_github(projectName, user):
     repo = github.get_repo(projectName)
 
     for issue in repo.get_issues(state='open'):
-        skill = extract_skills_from_labels(issue.labels)
+        skill = extract_skills_from_labels(issue.labels, user.skills)
         task = Task(issue.title, issue.created_at, issue.html_url, skill)
         task.set_description(issue.body)
         task.update_status(issue.state, issue.updated_at)

@@ -13,14 +13,13 @@ class User(object):
             threshold = 0.9
         return threshold
 
-    def set_skills(self, initial_skills):
-        skills = ["javascript", "css", "python", "django", "html"]
-
-        for skill in skills:
-            self.skills_thresholds[skill] = self.calculate_threshold(initial_skills[skill])
+    def initialize_skills(self, skills, user_skills):
+        self.skills = skills
+        for skill in self.skills:
+            self.skills_thresholds[skill] = self.calculate_threshold(user_skills[skill])
             #print "Umbral de %s: %f" % (skill, self.skills_thresholds[skill])
 
-    def config_test_user(self):
+    def config_test_user(self, skills):
         self.tasks_number = 5
-        mock_skills = {"javascript": False, "css": False, "python": True, "django": True, "html": True}
-        self.set_skills(mock_skills)
+        mock_skills = {skills[0]: False, skills[1]: False, skills[2]: True, skills[3]: True, skills[4]: True}
+        self.initialize_skills(skills, mock_skills)

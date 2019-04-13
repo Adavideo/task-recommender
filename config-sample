@@ -3,4 +3,7 @@ user=USER
 pass=PASSWORD
 
 [Project]
-name=ipfs/go-ipfs
+name=Adavideo/test-project
+
+[Skills]
+list = javascript,css,python,django,html
