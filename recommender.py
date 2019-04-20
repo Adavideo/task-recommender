@@ -1,11 +1,27 @@
 from task import Task
 import random
 from githubConnector import import_tasks_from_github
+from Config import Config
 
 
 def tasks_importer(project, user):
     tasks_list = import_tasks_from_github(project, user)
     return tasks_list
+
+def stimulus_intensity():
+    return 5
+
+def response_threshold(threshold):
+    # Response threshold formula
+    # T_0i (s) = s^n / s^n + 0i^n
+    # n = nonlinearity parameter
+    config = Config()
+    n = int(config.nonlinearity_parameter)
+    stimulus = stimulus_intensity()
+    threshold_fromula = (stimulus ** n) / ((stimulus ** n) + threshold ** n)
+    #print "//// threshold: %s" % threshold_fromula
+    return threshold_fromula
+
 
 def filter_task(task, skills_thresholds):
     #print "Filtrando tarea %s. Skill: %s. Prioridad: %d." % (task.name, task.skill, task.priority)
@@ -14,7 +30,7 @@ def filter_task(task, skills_thresholds):
     threshold = skills_thresholds[task.skill]
     #print "threshold for skill: %s" % str(threshold)
     r = random.randint(0,100) / 100.0
-    if r > threshold:
+    if r < response_threshold(threshold):
         return True
     else:
         return False

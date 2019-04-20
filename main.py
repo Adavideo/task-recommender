@@ -23,11 +23,8 @@ def menu_create_user():
     return user
 
 def menu_tasks():
-    user = config.user
-    project = config.project
     print "-" * 50 + "\n"
-    print "Recomending tasks from project %s for the user %s" % (project, user.name)
-    tasks = recommend_tasks(project, user)
+    tasks = recommend_tasks(config.project, config.user)
     if tasks:
         counter = 1
         for task in tasks:

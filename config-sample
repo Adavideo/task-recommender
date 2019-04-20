@@ -10,3 +10,6 @@ list = javascript,css,python,django,html
 
 [Tasks]
 tasks_number = 5
+
+[Threshold]
+nonlinearity_parameter = 2
