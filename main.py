@@ -1,5 +1,5 @@
 from user import User
-from recommender import recommend_tasks
+from Recommender import Recommender
 from task import Task
 from Config import Config
 
@@ -23,8 +23,9 @@ def menu_create_user():
     return user
 
 def menu_tasks():
+    recommender = Recommender(config.user)
     print "-" * 50 + "\n"
-    tasks = recommend_tasks(config.project, config.user)
+    tasks = recommender.recommend_tasks()
     if tasks:
         counter = 1
         for task in tasks:
@@ -41,7 +42,7 @@ def menu_tasks():
 def main_menu():
     option = ""
     while (option != "3"):
-        print "The user is %s. The project is %s." % (config.user.name, config.project)
+        print "The user is %s." % (config.user.name)
         print "\n" + "-" * 22
         print " 1 - Change user"
         print " 2 - Obtain recomendations"
