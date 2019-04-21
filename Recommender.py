@@ -6,11 +6,11 @@ from Config import Config
 class Recommender:
 
     def __init__(self, user):
-        config = Config()
-        self.project = config.project
         self.user = user
         self.number_of_tasks = user.tasks_number
         self.skills_thresholds = user.skills_thresholds
+        config = Config()
+        self.project = config.project
         self.nonlinearity_parameter = int(config.nonlinearity_parameter)
 
     def tasks_importer(self):
@@ -33,7 +33,7 @@ class Recommender:
         n = self.nonlinearity_parameter
         stimulus = self.stimulus_intensity()
         threshold_fromula = (stimulus ** n) / ((stimulus ** n) + threshold ** n)
-        print "//// threshold: %s" % threshold_fromula
+        #print "//// threshold: %s" % threshold_fromula
         return threshold_fromula
 
 

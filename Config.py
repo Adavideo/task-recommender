@@ -2,7 +2,7 @@ import configparser
 from user import User
 
 class Config:
-    """Reads the config file and sets the default github user and project
+    """Reads the config file
     """
 
     def __init__(self):
@@ -10,16 +10,10 @@ class Config:
         config.read("config")
         try:
             self.project = config['Project']['name']
-            user_name = config['Credentials']['user']
-            password = config['Credentials']['pass']
-            skills = config['Skills']['list'].split(",")
-            tasks_number = int(config['Tasks']['tasks_number'])
+            self.user_name = config['Credentials']['user']
+            self.password = config['Credentials']['pass']
+            self.skills = config['Skills']['list'].split(",")
+            self.tasks_number = int(config['Tasks']['tasks_number'])
             self.nonlinearity_parameter = config['Threshold']['nonlinearity_parameter']
         except KeyError:
             raise Exception("Config file needed or malformed. Please, copy and fill config-default.")
-        self.user = User(user_name,password,tasks_number)
-        self.user.config_test_user(skills)
-
-
-    def get_skills(self):
-        return self.user.skills

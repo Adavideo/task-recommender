@@ -5,16 +5,16 @@ from Config import Config
 
 
 def select_user_skills():
-    print "Let's config the programming languages you know. This will help filter the tasks to recommend you."
+    print "Let's config the programming languages you know. "
     new_user_skills = {}
-    for skill in config.get_skills():
+    for skill in config.skills:
         know_skill = raw_input("Are you competent in %s (y/n): " % skill)
         new_user_skills[skill] = know_skill == "y" or know_skill == "Y"
     return new_user_skills
 
 def menu_config_user_skills():
     user_skills = select_user_skills()
-    config.user.initialize_skills(config.get_skills(), user_skills)
+    user.initialize_new_skills(user_skills)
 
 def menu_tasks():
     print "-" * 50 + "\n"
@@ -49,5 +49,7 @@ def main_menu():
         print "-" * 22 + "\n"
 
 config = Config()
-recommender = Recommender(config.user)
+user = User(config.user_name, config.password, config.tasks_number)
+user.load_skills_from_file(config.skills)
+recommender = Recommender(user)
 main_menu()

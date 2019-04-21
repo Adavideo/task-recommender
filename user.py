@@ -1,3 +1,5 @@
+import configparser
+
 class User(object):
 
     def __init__(self, user_name, user_pass, tasks_number):
@@ -6,6 +8,18 @@ class User(object):
         self.tasks_number = tasks_number
         self.skills_thresholds = {}
 
+    def load_skills_from_file(self, skill_list):
+        self.skills = skill_list
+        user_file = configparser.ConfigParser()
+        user_file.read("user_skills")
+        try:
+            for skill in skill_list:
+                self.skills_thresholds[skill] = float(user_file['user_skills'][skill])
+                #print "==== skills from user file: %s = %s" % (skill, self.skills_thresholds[skill])
+        except KeyError:
+            raise Exception("User file needed or malformed.")
+
+
     def calculate_threshold(self, has_the_skill):
         if has_the_skill:
             threshold = 0.1
@@ -13,12 +27,7 @@ class User(object):
             threshold = 0.9
         return threshold
 
-    def initialize_skills(self, skills, user_skills):
-        self.skills = skills
+    def initialize_new_skills(self, user_skills):
         for skill in self.skills:
             self.skills_thresholds[skill] = self.calculate_threshold(user_skills[skill])
             #print "Umbral de %s: %f" % (skill, self.skills_thresholds[skill])
-
-    def config_test_user(self, skills):
-        mock_skills = {skills[0]: False, skills[1]: False, skills[2]: True, skills[3]: True, skills[4]: True}
-        self.initialize_skills(skills, mock_skills)
