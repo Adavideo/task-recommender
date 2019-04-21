@@ -8,8 +8,8 @@ name=Adavideo/test-project
 [Skills]
 list = javascript,css,python,django,html
 
-[Tasks]
+[Recommender]
 tasks_number = 5
-
-[Threshold]
 nonlinearity_parameter = 2
+default_stimuli = 0.3
+increase_in_stimulus_intensity = 0.1

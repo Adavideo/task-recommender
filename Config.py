@@ -13,7 +13,9 @@ class Config:
             self.user_name = config['Credentials']['user']
             self.password = config['Credentials']['pass']
             self.skills = config['Skills']['list'].split(",")
-            self.tasks_number = int(config['Tasks']['tasks_number'])
-            self.nonlinearity_parameter = config['Threshold']['nonlinearity_parameter']
+            self.tasks_number = int(config['Recommender']['tasks_number'])
+            self.nonlinearity_parameter = float(config['Recommender']['nonlinearity_parameter'])
+            self.default_stimuli = float(config['Recommender']['default_stimuli'])
+            self.increase_in_stimulus_intensity = float(config['Recommender']['increase_in_stimulus_intensity'])
         except KeyError:
             raise Exception("Config file needed or malformed. Please, copy and fill config-default.")
