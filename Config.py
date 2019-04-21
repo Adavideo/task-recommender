@@ -13,7 +13,7 @@ class Config:
             user_name = config['Credentials']['user']
             password = config['Credentials']['pass']
             skills = config['Skills']['list'].split(",")
-            tasks_number = config['Tasks']['tasks_number']
+            tasks_number = int(config['Tasks']['tasks_number'])
             self.nonlinearity_parameter = config['Threshold']['nonlinearity_parameter']
         except KeyError:
             raise Exception("Config file needed or malformed. Please, copy and fill config-default.")

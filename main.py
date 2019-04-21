@@ -12,18 +12,11 @@ def select_user_skills():
         new_user_skills[skill] = know_skill == "y" or know_skill == "Y"
     return new_user_skills
 
-def menu_create_user():
-    print "Creating new user"
-    user_name = raw_input("User name in github: ")
-    user_pass = raw_input("Pasword in github: ")
-    tasks_number = int(raw_input("How many task do you want to be recommend each time (5-20): "))
-    user = User(user_name, user_pass, tasks_number)
+def menu_config_user_skills():
     user_skills = select_user_skills()
-    user.initialize_skills(config.get_skills(), user_skills)
-    return user
+    config.user.initialize_skills(config.get_skills(), user_skills)
 
 def menu_tasks():
-    recommender = Recommender(config.user)
     print "-" * 50 + "\n"
     tasks = recommender.recommend_tasks()
     if tasks:
@@ -42,14 +35,13 @@ def menu_tasks():
 def main_menu():
     option = ""
     while (option != "3"):
-        print "The user is %s." % (config.user.name)
         print "\n" + "-" * 22
-        print " 1 - Change user"
+        print " 1 - Configure user skills"
         print " 2 - Obtain recomendations"
         print " 3 - Exit\n"
         option = raw_input("Choose an option: ")
         if option == "1":
-            config.user = menu_create_user()
+            menu_config_user_skills()
         elif option == "2":
             menu_tasks()
         elif option != "3":
@@ -57,4 +49,5 @@ def main_menu():
         print "-" * 22 + "\n"
 
 config = Config()
+recommender = Recommender(config.user)
 main_menu()
