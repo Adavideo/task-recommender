@@ -23,49 +23,44 @@ class Recommender:
         #alfa : scale factor measuring the efficiency of task performance
         #N: number of potentially active individuals in the colony
         #N_act : number of active individuals
-        stimulus = 1
+        stimulus = 0.3
         return stimulus
 
-    def response_threshold(self, threshold):
+    def response_probability(self, threshold):
+        # Individuals engage in task performance when the level of the task-associated stimuli exceeds their thresholds
         # Response threshold formula
         # T_0i (s) = s^n / s^n + 0i^n
-        # n = nonlinearity parameter
         n = self.nonlinearity_parameter
         stimulus = self.stimulus_intensity()
-        threshold_fromula = (stimulus ** n) / ((stimulus ** n) + threshold ** n)
-        #print "//// threshold: %s" % threshold_fromula
-        return threshold_fromula
+        response_probability = (stimulus ** n) / ((stimulus ** n) + threshold ** n)
+        #print "//// response probability: %s" % response_probability
+        return response_probability
 
-
-    def filter_task(self, task):
-        #print "Filtrando tarea %s. Skill: %s. Prioridad: %d." % (task.name, task.skill, task.priority)
+    def validate_if_task_pass_the_filter(self, task):
+        #print "Filtrando tarea %s. Skill: %s. " % (task.name, task.skill)
         if task.skill == "":
             return False
-        threshold = self.skills_thresholds[task.skill]
-        #print "threshold for skill: %s" % str(threshold)
+        task_threshold = self.skills_thresholds[task.skill]
+        #print "threshold for skill: %f" % task_threshold
         r = random.randint(0,100) / 100.0
-        if r < self.response_threshold(threshold):
+        if r < self.response_probability(task_threshold):
             return True
         else:
             return False
 
-
     def add_task_if_passes_the_filter(self, filtered_tasks, task):
-        task_passes_the_filter = self.filter_task(task)
+        task_passes_the_filter = self.validate_if_task_pass_the_filter(task)
         if task_passes_the_filter:
             filtered_tasks.append(task)
 
-
     def filter_tasks(self, unfiltered_tasks):
         filtered_tasks = []
-
         for i in range(0, len(unfiltered_tasks)):
             if len(filtered_tasks) < self.number_of_tasks:
                 self.add_task_if_passes_the_filter(filtered_tasks, unfiltered_tasks[i])
             else:
                 break
         return filtered_tasks
-
 
     def recommend_tasks(self):
         unfiltered_tasks = self.tasks_importer()
