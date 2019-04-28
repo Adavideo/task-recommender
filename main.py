@@ -51,5 +51,5 @@ def main_menu():
 config = Config()
 user = User(config.user_name, config.password, config.tasks_number)
 user.load_skills_from_file(config.skills)
-recommender = Recommender(user)
+recommender = Recommender(user, config.project)
 main_menu()
