@@ -13,6 +13,8 @@ class AdaptativeTaskAllocation:
             self.tasks_performance = {}
             self.proportion_of_tasks_per_type = {}
             self.previous_proportion_of_tasks = {}
+            self.total_contributors = 0
+            self.active_contributors = 0
 
 
     def count_tasks_of_type(self, task_type, tasks_list):
@@ -61,8 +63,8 @@ class AdaptativeTaskAllocation:
         stimulus = self.tasks_stimuli[task_type]
         delta = self.config.increase_in_stimulus_intensity
         alfa = self.tasks_performance[task_type]
-        N = 10
-        N_act = 3
+        N = self.total_contributors
+        N_act = self.active_contributors
         self.tasks_stimuli[task_type] = stimulus + delta - (alfa * N_act / N )
 
     def update_stimuli(self):
@@ -72,10 +74,15 @@ class AdaptativeTaskAllocation:
             for skill in self.skills:
                 self.calculate_and_update_stimulus(skill)
 
+
     def update(self, tasks_list):
         self.tasks_list = tasks_list
         self.update_tasks_performance()
         self.update_stimuli()
+
+    def update_contributors(self, active_contributors, total_contributors):
+        self.total_contributors = total_contributors
+        self.active_contributors = active_contributors
 
     def response_probability(self, threshold, stimulus):
         # Individuals engage in task performance when the level of the task-associated stimuli exceeds their thresholds
