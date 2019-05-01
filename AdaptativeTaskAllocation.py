@@ -13,9 +13,6 @@ class AdaptativeTaskAllocation:
             self.tasks_performance = {}
             self.proportion_of_tasks_per_type = {}
             self.previous_proportion_of_tasks = {}
-            self.total_contributors = 0
-            self.active_contributors = 0
-
 
     def count_tasks_of_type(self, task_type, tasks_list):
         number_of_tasks = 0.0
@@ -63,8 +60,12 @@ class AdaptativeTaskAllocation:
         stimulus = self.tasks_stimuli[task_type]
         delta = self.config.increase_in_stimulus_intensity
         alfa = self.tasks_performance[task_type]
-        N = self.total_contributors
+        if self.total_contributors == 0:
+            N = 1
+        else:
+            N = self.total_contributors
         N_act = self.active_contributors
+        #print "contributors. total: %d  active: %d." % (N, N_act)
         self.tasks_stimuli[task_type] = stimulus + delta - (alfa * N_act / N )
 
     def update_stimuli(self):
@@ -74,15 +75,29 @@ class AdaptativeTaskAllocation:
             for skill in self.skills:
                 self.calculate_and_update_stimulus(skill)
 
+    def calculate_active_contributors(self, tasks_list):
+        contributors = []
+        for task in tasks_list:
+            if task.assigned_to and task.assigned_to not in contributors:
+                contributors.append(task.assigned_to)
+        return len(contributors)
 
-    def update(self, tasks_list):
+    def update_contributors(self, tasks_list, total_contributors):
+        self.active_contributors = self.calculate_active_contributors(tasks_list)
+        # The total of contributors is extracted from the number of people that has make a commit to the repository at some point.
+        # Active contributors is the number of users that has an issue assigned at this mommet.
+        # It is possible, if users has issues assigned but had not make any commits, that the total is lower than active users.
+        # In that case, we simply assume that the total of users is the same as the active users
+        if total_contributors > self.active_contributors:
+            self.total_contributors = total_contributors
+        else:
+            self.total_contributors = self.active_contributors
+
+    def update(self, tasks_list, total_contributors):
         self.tasks_list = tasks_list
+        self.update_contributors(tasks_list, total_contributors)
         self.update_tasks_performance()
         self.update_stimuli()
-
-    def update_contributors(self, active_contributors, total_contributors):
-        self.total_contributors = total_contributors
-        self.active_contributors = active_contributors
 
     def response_probability(self, threshold, stimulus):
         # Individuals engage in task performance when the level of the task-associated stimuli exceeds their thresholds
@@ -100,7 +115,7 @@ class AdaptativeTaskAllocation:
         task_threshold = self.skills_thresholds[task_type]
         #print "threshold for skill: %f" % task_threshold
         stimulus = self.tasks_stimuli[task_type]
-        #print "Stimulus for task %s: %f" % (task.skill, stimulus)
+        #print "Stimulus for task %s: %f" % (task_type, stimulus)
         r = random.randint(0,100) / 100.0
         if r < self.response_probability(task_threshold, stimulus):
             return True

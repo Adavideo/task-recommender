@@ -7,13 +7,19 @@ class Task(object):
         self.state = ""
         self.created_at = created_at
         self.updated_at = ""
-        self.description = ""
-
-
-    def set_description(self, description):
-        self.description = description
-
 
     def update_status(self, state, updated_at):
         self.state = state
         self.updated_at = updated_at
+
+    def set_description(self, description):
+        self.description = description
+
+    def assign(self, assignee):
+        self.assigned_to = assignee
+
+    def not_assigned(self):
+        if self.assigned_to:
+            return False
+        else:
+            return True

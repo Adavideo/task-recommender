@@ -32,6 +32,8 @@ class GithubConnector:
             skill = self.extract_skills_from_labels(issue.labels)
             task = Task(issue.title, issue.created_at, issue.html_url, skill)
             task.set_description(issue.body)
+            task.assign(issue.assignee)
+            #print task.assigned_to
             task.update_status(issue.state, issue.updated_at)
             tasks_list.append(task)
         return tasks_list
@@ -42,8 +44,4 @@ class GithubConnector:
         count = 0
         for _ in contributors:
             count += 1
-        #return count
-        return 10
-
-    def get_active_contributors(self):
-        return 3
+        return count
