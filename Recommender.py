@@ -1,14 +1,12 @@
 from task import Task
-from GithubConnector import GithubConnector
 from AdaptativeTaskAllocation import AdaptativeTaskAllocation
 
 class Recommender:
 
-    def __init__(self, user, project, skills):
-        self.github = GithubConnector(project, user)
-        self.github.skills = skills
+    def __init__(self, user, github):
+        self.github = github
         self.number_of_tasks_to_recommend = user.tasks_number
-        self.task_allocation = AdaptativeTaskAllocation(skills, user.skills_thresholds)
+        self.task_allocation = AdaptativeTaskAllocation(user.skills, user.skills_thresholds)
 
     def tasks_importer(self):
         tasks_list = self.github.import_tasks()

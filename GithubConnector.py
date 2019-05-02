@@ -9,15 +9,7 @@ class GithubConnector:
         github = Github(user.name, user.password)
         self.repo = github.get_repo(project)
         self.last_update = ""
-
-    def tasks_mockup(self, tasks_number):
-        tasks_list = []
-        for i in range(1, tasks_number + 1):
-            created_at = random.randint(1,5)
-            skill = random.randint(0,4)
-            task = Task("tarea "+ str(i), created_at, "www.github.com", skills[skill])
-            tasks_list.append(task)
-        return tasks_list
+        self.skills = user.skills
 
     def extract_skills_from_labels(self, labels):
         for label in labels:
@@ -33,7 +25,6 @@ class GithubConnector:
             task = Task(issue.title, issue.created_at, issue.html_url, skill)
             task.set_description(issue.body)
             task.assign(issue.assignee)
-            #print task.assigned_to
             task.update_status(issue.state, issue.updated_at)
             tasks_list.append(task)
         return tasks_list

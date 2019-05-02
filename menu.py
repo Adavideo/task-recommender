@@ -2,6 +2,7 @@ from user import User
 from Recommender import Recommender
 from task import Task
 from Config import Config
+from GithubConnector import GithubConnector
 
 
 def select_user_skills():
@@ -51,5 +52,6 @@ def main_menu():
 config = Config()
 user = User(config.user_name, config.password, config.tasks_number)
 user.load_skills_from_file(config.skills)
-recommender = Recommender(user, config.project, config.skills)
+github_connector = GithubConnector(config.project, user)
+recommender = Recommender(user, github_connector)
 main_menu()
