@@ -11,7 +11,5 @@ simulator = GithubSimulator(user)
 recommender = Recommender(user, simulator)
 
 tasks = recommender.recommend_tasks()
-counter = 1
 for task in tasks:
-    print "%d - %s. Skill required: %s" % (counter, task.name, task.skill)
-    counter += 1
+    print "%d - %s. Skill required: %s" % (task.number, task.name, task.skill)

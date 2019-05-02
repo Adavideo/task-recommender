@@ -12,7 +12,7 @@ class GithubSimulator:
         tasks = []
         for i in range(1, tasks_number + 1):
             skill_index = random.randint(0,4)
-            task = Task("tarea "+ str(i), "www.github.com", self.skills[skill_index],"")
+            task = Task(i, "tarea "+ str(i), "www.github.com", self.skills[skill_index],"")
             tasks.append(task)
         return tasks
 

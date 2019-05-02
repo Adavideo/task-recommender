@@ -22,7 +22,7 @@ class GithubConnector:
         tasks_list = []
         for issue in self.repo.get_issues(state='open'):
             skill = self.extract_skills_from_labels(issue.labels)
-            task = Task(issue.title, issue.html_url, skill, issue.assignee)
+            task = Task(issue.number, issue.title, issue.html_url, skill, issue.assignee)
             task.set_description(issue.body)
             task.update_status(issue.state)
             tasks_list.append(task)
@@ -35,3 +35,8 @@ class GithubConnector:
         for _ in contributors:
             count += 1
         return count
+
+    def assign_task(self, task, user_name):
+        task.assign(user_name)
+        issue = self.repo.get_issue(task.number)
+        issue.add_to_assignees(user_name)

@@ -1,11 +1,12 @@
 class Task(object):
 
-    def __init__(self, task_name, task_link, task_skill, assignee):
+    def __init__(self, task_number, task_name, task_link, task_skill, assignee):
+        self.number = task_number
         self.name = task_name
         self.link = task_link
         self.skill = task_skill
         self.assigned_to = assignee
-        self.state = ""        
+        self.state = ""
 
     def update_status(self, state):
         self.state = state

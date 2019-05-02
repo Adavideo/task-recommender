@@ -30,6 +30,7 @@ def menu_tasks():
         print "You have selected the task %s" % task.name
         print "Here is the link: " + task.link
         print task.description
+        github_connector.assign_task(task, user.name)
     else:
         print "Sorry. No tasks."
 
