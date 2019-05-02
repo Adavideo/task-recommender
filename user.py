@@ -7,6 +7,7 @@ class User(object):
         self.password = user_pass
         self.tasks_number = tasks_number
         self.skills_thresholds = {}
+        self.working_on_task = ""
 
     def load_skills_from_file(self, skill_list):
         self.skills = skill_list
@@ -31,3 +32,10 @@ class User(object):
         for skill in self.skills:
             self.skills_thresholds[skill] = self.calculate_threshold(user_skills[skill])
             #print "Umbral de %s: %f" % (skill, self.skills_thresholds[skill])
+
+    def assign(self, task):
+        self.working_on_task = task
+
+    def complete_current_task(self):
+        self.working_on_task.close_task()
+        self.working_on_task = ""

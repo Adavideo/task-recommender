@@ -14,15 +14,21 @@ class GithubSimulator:
         for i in range(1, tasks_number + 1):
             skill_index = random.randint(0,4)
             task = Task(i, "tarea "+ str(i), "www.github.com", self.skills[skill_index],"")
+            task.update_status("open")
             tasks.append(task)
         return tasks
 
     def update(self):
-        print "to do update"
+        #print "to do update"
+        print ""
 
     def import_tasks(self):
         self.update()
-        return self.tasks
+        open_tasks = []
+        for task in self.tasks:
+            if task.state == "open":
+                open_tasks.append(task)
+        return open_tasks
 
     def get_total_contributors(self):
         return self.number_of_contributors

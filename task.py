@@ -17,6 +17,10 @@ class Task(object):
     def assign(self, assignee):
         self.assigned_to = assignee
 
+    def close_task(self):
+        self.state = "close"
+        self.assigned_to = ""
+
     def not_assigned(self):
         if self.assigned_to:
             return False
