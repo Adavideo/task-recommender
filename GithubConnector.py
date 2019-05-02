@@ -22,10 +22,9 @@ class GithubConnector:
         tasks_list = []
         for issue in self.repo.get_issues(state='open'):
             skill = self.extract_skills_from_labels(issue.labels)
-            task = Task(issue.title, issue.created_at, issue.html_url, skill)
+            task = Task(issue.title, issue.html_url, skill, issue.assignee)
             task.set_description(issue.body)
-            task.assign(issue.assignee)
-            task.update_status(issue.state, issue.updated_at)
+            task.update_status(issue.state)
             tasks_list.append(task)
         return tasks_list
 
