@@ -3,10 +3,11 @@ from task import Task
 
 class GithubSimulator:
 
-    def __init__(self, user):
+    def __init__(self, skills, number_of_tasks, number_of_contributors):
         self.last_update = ""
-        self.skills = user.skills
-        self.tasks_number = user.tasks_number
+        self.skills = skills
+        self.tasks = self.tasks_mockup(number_of_tasks)
+        self.number_of_contributors = number_of_contributors
 
     def tasks_mockup(self, tasks_number):
         tasks = []
@@ -16,9 +17,12 @@ class GithubSimulator:
             tasks.append(task)
         return tasks
 
+    def update(self):
+        print "to do update"
+
     def import_tasks(self):
-        tasks_list = self.tasks_mockup(self.tasks_number)
-        return tasks_list
+        self.update()
+        return self.tasks
 
     def get_total_contributors(self):
-        return 10
+        return self.number_of_contributors
