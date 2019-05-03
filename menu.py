@@ -19,7 +19,7 @@ def menu_config_user_skills():
 
 def menu_tasks():
     print "-" * 50 + "\n"
-    tasks = recommender.recommend_tasks()
+    tasks = recommender.recommend_tasks(user)
     if tasks:
         counter = 1
         for task in tasks:
@@ -54,5 +54,5 @@ config = Config()
 user = User(config.user_name, config.password, config.tasks_number)
 user.load_skills_from_file(config.skills)
 github_connector = GithubConnector(config.project, user)
-recommender = Recommender(user, github_connector)
+recommender = Recommender(github_connector)
 main_menu()

@@ -23,35 +23,34 @@ def select_random_task(user, tasks):
 def get_recommendations_and_select_task(user, recommender):
     tasks = []
     while not tasks:
-        tasks = recommender.recommend_tasks()
+        tasks = recommender.recommend_tasks(user)
     select_random_task(user, tasks)
 
-def simulate_user_behavior(user, recommender):
+def simulate_user_behavior(user):
     if not user.working_on_task:
         get_recommendations_and_select_task(user, recommender)
     else:
         user.complete_current_task()
 
 
-
 config = Config()
 simulator = GithubSimulator(config.skills, config.tasks_number * 2, 5)
+recommender = Recommender(simulator)
 
-test_user1 = User("TestUser1", "", config.tasks_number)
-test_user1.load_skills_from_file(config.skills)
-recommender1 = Recommender(test_user1, simulator)
-
-test_user2 = User("TestUser2", "", config.tasks_number)
-test_user2.load_skills_from_file(config.skills)
-recommender2 = Recommender(test_user2, simulator)
+users = []
+for i in range(0,2):
+    user_name = "TestUser%d" % i
+    test_user = User(user_name, "", config.tasks_number)
+    test_user.load_skills_from_file(config.skills)
+    users.append(test_user)
 
 print "Initial list of tasks:"
 print_tasks(simulator.tasks)
 
 iterations = int(raw_input("Select number of iterations: "))
 for i in range(1, iterations+1):
-    simulate_user_behavior(test_user1, recommender1)
-    simulate_user_behavior(test_user2, recommender2)
+    for user in users:
+        simulate_user_behavior(user)
 
 print "-" * 10
 print "Final list of tasks:"

@@ -1,5 +1,4 @@
 import configparser
-from user import User
 
 class Config:
     """Reads the config file
