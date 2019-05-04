@@ -66,12 +66,14 @@ class AdaptativeTaskAllocation:
             N = self.total_contributors
         N_act = self.active_contributors
         #print "contributors. total: %d  active: %d." % (N, N_act)
-        #print "new_stimulus = stimulus + delta - (alfa * N_act / N )"
         #print "%s stimulus = %s + %s - (%s * %s / %s)" % (task_type, stimulus, delta, alfa, N_act, N)
         new_stimulus = stimulus + delta - (alfa * N_act / N )
         minimum_stimulus = self.config.minimum_stimulus
+        maximum_stimulus = self.config.maximum_stimulus
         if new_stimulus < minimum_stimulus:
             return minimum_stimulus
+        elif new_stimulus > maximum_stimulus:
+            return maximum_stimulus
         else:
             return new_stimulus
 
