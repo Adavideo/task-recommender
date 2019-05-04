@@ -11,7 +11,14 @@ list = javascript,css,python,django,html
 [Recommender]
 tasks_number = 5
 nonlinearity_parameter = 2
-default_stimuli = 0.3
-increase_in_stimulus_intensity = 0.1
-task_performance_scale = 0.0-0.2
-task_performance_default = 1
+
+[Stimuli]
+default = 0.3
+increase_in_intensity = 0.1
+minimum = 0.1
+maximum = 1
+
+[TaskPerformance]
+scale = 0.0-0.2
+default = 1
+proportion_adjustment = 0.1

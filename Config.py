@@ -20,8 +20,13 @@ class Config:
         config = configparser.ConfigParser()
         config.read("config")
         self.nonlinearity_parameter = float(config['Recommender']['nonlinearity_parameter'])
-        self.default_stimuli = float(config['Recommender']['default_stimuli'])
-        self.increase_in_stimulus_intensity = float(config['Recommender']['increase_in_stimulus_intensity'])
-        task_performance_scale = config['Recommender']['task_performance_scale'].split("-")
+        # [Stimuli]
+        self.default_stimulus = float(config['Stimuli']['default'])
+        self.increase_in_stimulus_intensity = float(config['Stimuli']['increase_in_intensity'])
+        self.minimum_stimulus = float(config['Stimuli']['minimum'])
+        self.maximum_stimulus = float(config['Stimuli']['maximum'])
+        # [TaskPerformance]
+        task_performance_scale = config['TaskPerformance']['scale'].split("-")
         self.task_performance_scale = [float(task_performance_scale[0]),float(task_performance_scale[1])]
-        self.task_performance_default = float(config['Recommender']['task_performance_default'])
+        self.task_performance_default = float(config['TaskPerformance']['default'])
+        self.task_performance_proportion_adjustment = float(config['TaskPerformance']['proportion_adjustment'])

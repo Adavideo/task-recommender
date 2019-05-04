@@ -20,7 +20,7 @@ class AdaptativeTaskAllocation:
         # T_0i (s) = s^n / s^n + 0i^n
         n = self.config.nonlinearity_parameter
         response_probability = (stimulus ** n) / ((stimulus ** n) + threshold ** n)
-        print "threshold: %f  stimulus: %f  Response probability: %s" % (threshold, stimulus, response_probability)
+        #print "threshold: %f  stimulus: %f  Response probability: %s" % (threshold, stimulus, response_probability)
         return response_probability
 
     def calculate_task_performance(self, task_type):
@@ -36,18 +36,19 @@ class AdaptativeTaskAllocation:
             #print "task performance %s = %f + %f + (%f * %f)" % (task_type, scale[0],medium,decrement ,medium  )
             types_of_tasks = len(self.config.skills)
             equal_proportion = 1.0/types_of_tasks
-            print "%s - equal %f  current %f" % (task_type, equal_proportion, current_proportion)
+            #print "%s - equal %f  current %f" % (task_type, equal_proportion, current_proportion)
+            proportion_adjustment = self.config.task_performance_proportion_adjustment
             # if there is too many tasks of some type, the performance is bad
             if (current_proportion > equal_proportion):
-                total_proportion_adjustment = -0.1
+                proportion_adjustment = -1 * proportion_adjustment
             # if there is less tasks of some type than the equal proportion, the performance is good
             elif (current_proportion < equal_proportion):
-                total_proportion_adjustment = 0.05
+                proportion_adjustment = proportion_adjustment
             else:
-                total_proportion_adjustment = 0.0
-            print "%s total proportion adjustment: %f" % (task_type, total_proportion_adjustment)
-            task_performance = scale[0] + medium + (decrement * medium) + total_proportion_adjustment
-        print "Task performance %s: %f" % (task_type, task_performance)
+                proportion_adjustment = 0.0
+            #print "%s total proportion adjustment: %f" % (task_type, proportion_adjustment)
+            task_performance = scale[0] + medium + (decrement * medium) + proportion_adjustment
+        #print "Task performance %s: %f" % (task_type, task_performance)
         return task_performance
 
     def calculate_stimulus(self, task_type):
@@ -68,7 +69,7 @@ class AdaptativeTaskAllocation:
         #print "new_stimulus = stimulus + delta - (alfa * N_act / N )"
         #print "%s stimulus = %s + %s - (%s * %s / %s)" % (task_type, stimulus, delta, alfa, N_act, N)
         new_stimulus = stimulus + delta - (alfa * N_act / N )
-        minimum_stimulus = 0.1
+        minimum_stimulus = self.config.minimum_stimulus
         if new_stimulus < minimum_stimulus:
             return minimum_stimulus
         else:
@@ -121,7 +122,7 @@ class AdaptativeTaskAllocation:
 
     def initialize_stimuli(self):
         for skill in self.config.skills:
-            self.tasks_stimuli[skill] = self.config.default_stimuli
+            self.tasks_stimuli[skill] = self.config.default_stimulus
 
     def update_stimuli(self):
         if not self.tasks_stimuli:
@@ -145,7 +146,7 @@ class AdaptativeTaskAllocation:
         task_threshold = self.skills_thresholds[skill]
         #print "threshold for skill: %f" % task_threshold
         stimulus = self.tasks_stimuli[skill]
-        print "Stimulus for task %s: %f" % (skill, stimulus)
+        #print "Stimulus for task %s: %f" % (skill, stimulus)
         r = random.randint(0,100) / 100.0
         if r < self.response_probability(task_threshold, stimulus):
             return True
