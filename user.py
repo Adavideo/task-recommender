@@ -10,8 +10,8 @@ class User(object):
         self.skills_thresholds = {}
         self.working_on_task = ""
 
-    def initialize_task_allocation(self, skills):
-        self.task_allocation = AdaptativeTaskAllocation(self.skills, self.skills_thresholds)
+    def initialize_task_allocation(self):
+        self.task_allocation = AdaptativeTaskAllocation(self.skills_thresholds)
 
     def load_skills_from_file(self, skills):
         self.skills = skills
@@ -23,7 +23,7 @@ class User(object):
                 #print "==== skills from user file: %s = %s" % (skill, self.skills_thresholds[skill])
         except KeyError:
             raise Exception("User file needed or malformed.")
-        self.initialize_task_allocation(skills)
+        self.initialize_task_allocation()
 
     def calculate_threshold(self, has_the_skill):
         if has_the_skill:
@@ -32,11 +32,12 @@ class User(object):
             threshold = 0.9
         return threshold
 
-    def initialize_new_skills(self, skills):
+    def initialize_new_skills(self, new_user_skills):
         for skill in self.skills:
-            self.skills_thresholds[skill] = self.calculate_threshold(skills[skill])
+            has_the_skill = new_user_skills[skill]
+            self.skills_thresholds[skill] = self.calculate_threshold(has_the_skill)
             #print "Umbral de %s: %f" % (skill, self.skills_thresholds[skill])
-        self.initialize_task_allocation(skills)
+        self.initialize_task_allocation()
 
     def assign(self, task):
         self.working_on_task = task
