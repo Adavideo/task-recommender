@@ -114,8 +114,12 @@ class AdaptativeTaskAllocation:
             for skill in self.config.skills:
                 self.previous_proportion_of_tasks[skill] = self.proportion_of_tasks_per_type[skill]
         total_number_of_tasks = len(tasks)
-        for skill in self.config.skills:
-            self.proportion_of_tasks_per_type[skill] = self.count_tasks_of_type(skill, tasks) / total_number_of_tasks
+        if total_number_of_tasks == 0:
+            for skill in self.config.skills:
+                self.proportion_of_tasks_per_type[skill] = 0
+        else:
+            for skill in self.config.skills:
+                self.proportion_of_tasks_per_type[skill] = self.count_tasks_of_type(skill, tasks) / total_number_of_tasks
 
     def update_tasks_performance(self, tasks):
         self.update_tasks_per_type(tasks)
