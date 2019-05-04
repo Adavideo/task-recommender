@@ -28,5 +28,11 @@ class Recommender:
     def recommend_tasks(self, user):
         unfiltered_tasks = self.github.import_tasks()
         self.update_task_allocation(user.task_allocation, unfiltered_tasks)
-        recommended_tasks = self.filter_tasks(user, unfiltered_tasks)
+
+        if not unfiltered_tasks:
+            return []
+
+        recommended_tasks = []
+        while not recommended_tasks:
+            recommended_tasks = self.filter_tasks(user, unfiltered_tasks)
         return recommended_tasks
