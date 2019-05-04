@@ -13,5 +13,5 @@ tasks_number = 5
 nonlinearity_parameter = 2
 default_stimuli = 0.3
 increase_in_stimulus_intensity = 0.1
-task_performance_scale = 1-5
-task_performance_default = 3
+task_performance_scale = 0.0-0.2
+task_performance_default = 1
