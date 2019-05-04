@@ -34,7 +34,18 @@ class AdaptativeTaskAllocation:
             decrement = previous_proportion_of_tasks - current_proportion_of_tasks
             #print "%s - previous: %f  current: %f  decrement: %f " % (task_type, previous_proportion_of_tasks, current_proportion_of_tasks, decrement)
             #print "task performance %s = %f + %f + (%f * %f)" % (task_type, scale[0],medium,decrement ,medium  )
-            task_performance = scale[0] + medium + (decrement * medium)
+            types_of_tasks = len(self.config.skills)
+            equal_proportion = 1.0/types_of_tasks
+            # if there is too many tasks of some type, the performance is bad
+            if (current_proportion_of_tasks > equal_proportion):
+                total_proportion_adjustment = -0.1
+            # if there is less tasks of some type than the equal proportion, the performance is good
+            elif (current_proportion_of_tasks < equal_proportion):
+                total_proportion_adjustment = 0.05
+            else:
+                total_proportion_adjustment = 0.0
+            #print "%s total proportion adjustment: %f" % (task_type, total_proportion_adjustment)
+            task_performance = scale[0] + medium + (decrement * medium) + total_proportion_adjustment
         #print "Task performance %s: %f" % (task_type, task_performance)
         return task_performance
 
@@ -129,7 +140,7 @@ class AdaptativeTaskAllocation:
         task_threshold = self.skills_thresholds[skill]
         #print "threshold for skill: %f" % task_threshold
         stimulus = self.tasks_stimuli[skill]
-        #print "Stimulus for task %s: %f" % (task_type, stimulus)
+        #print "Stimulus for task %s: %f" % (skill, stimulus)
         r = random.randint(0,100) / 100.0
         if r < self.response_probability(task_threshold, stimulus):
             return True
