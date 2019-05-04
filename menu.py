@@ -25,12 +25,14 @@ def menu_tasks():
         for task in tasks:
             print "%d - %s. Skill required: %s" % (counter, task.name, task.skill)
             counter += 1
-        selection = int(raw_input("Select a task: "))
-        task = tasks[selection-1]
-        print "You have selected the task %s" % task.name
-        print "Here is the link: " + task.link
-        print task.description
-        github_connector.assign_task(task, user.name)
+        print "%d - Go back to main menu" % counter
+        selection = int(raw_input("Select an option: "))
+        if int(selection) < counter:
+            task = tasks[selection-1]
+            print "You have selected the task %s" % task.name
+            print "Here is the link: " + task.link
+            print task.description
+            github_connector.assign_task(task, user.name)
     else:
         print "Sorry. No tasks."
 
