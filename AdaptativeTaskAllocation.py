@@ -20,7 +20,7 @@ class AdaptativeTaskAllocation:
         # T_0i (s) = s^n / s^n + 0i^n
         n = self.config.nonlinearity_parameter
         response_probability = (stimulus ** n) / ((stimulus ** n) + threshold ** n)
-        #print "//// response probability: %s" % response_probability
+        #print "threshold: %f  stimulus: %f  Response probability: %s" % (threshold, stimulus, response_probability)
         return response_probability
 
     def calculate_task_performance(self, task_type):
@@ -32,6 +32,8 @@ class AdaptativeTaskAllocation:
             scale = self.config.task_performance_scale
             medium = (scale[1] - scale[0]) / 2
             decrement = previous_proportion_of_tasks - current_proportion_of_tasks
+            #print "%s - previous: %f  current: %f  decrement: %f " % (task_type, previous_proportion_of_tasks, current_proportion_of_tasks, decrement)
+            #print "task performance %s = %f + %f + (%f * %f)" % (task_type, scale[0],medium,decrement ,medium  )
             task_performance = scale[0] + medium + (decrement * medium)
         #print "Task performance %s: %f" % (task_type, task_performance)
         return task_performance
@@ -51,6 +53,8 @@ class AdaptativeTaskAllocation:
             N = self.total_contributors
         N_act = self.active_contributors
         #print "contributors. total: %d  active: %d." % (N, N_act)
+        #print "new_stimulus = stimulus + delta - (alfa * N_act / N )"
+        #print "%s stimulus = %s + %s - (%s * %s / %s)" % (task_type, stimulus, delta, alfa, N_act, N)
         new_stimulus = stimulus + delta - (alfa * N_act / N )
         return new_stimulus
 
@@ -88,7 +92,8 @@ class AdaptativeTaskAllocation:
 
     def update_tasks_per_type(self, tasks):
         if self.proportion_of_tasks_per_type:
-            self.previous_proportion_of_tasks = self.proportion_of_tasks_per_type
+            for skill in self.config.skills:
+                self.previous_proportion_of_tasks[skill] = self.proportion_of_tasks_per_type[skill]
         total_number_of_tasks = len(tasks)
         for skill in self.config.skills:
             self.proportion_of_tasks_per_type[skill] = self.count_tasks_of_type(skill, tasks) / total_number_of_tasks
@@ -118,13 +123,12 @@ class AdaptativeTaskAllocation:
 
     # Main function for the filtering
 
-    def validate_if_task_pass_the_filter(self, task_type):
-        #print "Filtrando tarea %s. Skill: %s. " % (task.name, task.skill)
-        if task_type == "":
+    def validate_if_task_pass_the_filter(self, skill):
+        if skill == "":
             return False
-        task_threshold = self.skills_thresholds[task_type]
+        task_threshold = self.skills_thresholds[skill]
         #print "threshold for skill: %f" % task_threshold
-        stimulus = self.tasks_stimuli[task_type]
+        stimulus = self.tasks_stimuli[skill]
         #print "Stimulus for task %s: %f" % (task_type, stimulus)
         r = random.randint(0,100) / 100.0
         if r < self.response_probability(task_threshold, stimulus):
