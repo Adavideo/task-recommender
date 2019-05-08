@@ -20,7 +20,7 @@ def initialize_users(number_of_users, skills, tasks_number):
         users.append(test_user)
     return users
 
-# Ustil
+# Util
 
 def print_tasks(tasks):
     for task in tasks:
@@ -33,7 +33,9 @@ def print_tasks(tasks):
 def print_results(statistics, users_parameters):
     print "-" * 20
     print "STATISTICS"
-    print statistics
+    print "Completed tasks: %d  Pending tasks: %d" % (statistics["completed tasks"],statistics["pending tasks"])
+    print "Pending tasks per type:"
+    print statistics["pending tasks per type"]
     print "-" * 10
     print "USERS PARAMETERS:"
     print "Stimuli"
