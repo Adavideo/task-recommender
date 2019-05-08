@@ -26,3 +26,9 @@ class Task(object):
             return False
         else:
             return True
+
+    def is_closed(self):
+        if self.state == "close":
+            return True
+        else:
+            return False

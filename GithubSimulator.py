@@ -31,7 +31,6 @@ class GithubSimulator:
 
     def update(self):
         self.add_new_task()
-        print ""
 
     def import_tasks(self):
         self.update()
