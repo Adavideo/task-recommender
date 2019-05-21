@@ -36,6 +36,13 @@ def menu_tasks():
     else:
         print "Sorry. No tasks."
 
+def menu_adaptative_or_greedy():
+    greedy_or_adaptative = raw_input("Greedy or adaptative task allocation? (g/a): ")
+    if greedy_or_adaptative == "a":
+        return True
+    else:
+        return False
+
 def main_menu():
     option = ""
     while (option != "3"):
@@ -56,5 +63,6 @@ config = Config()
 user = User(config.user_name, config.password, config.tasks_number)
 user.load_skills_from_file(config.skills)
 github_connector = GithubConnector(config.project, user)
-recommender = Recommender(github_connector)
+adaptative = menu_adaptative_or_greedy()
+recommender = Recommender(github_connector, adaptative)
 main_menu()
