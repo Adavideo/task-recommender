@@ -7,9 +7,9 @@ import random
 
 # Initialization
 
-def initialize_recommender(skills, tasks_number):
+def initialize_recommender(skills, tasks_number, adaptative):
     simulator = GithubSimulator(skills, tasks_number * 2, 5)
-    return Recommender(simulator)
+    return Recommender(simulator, adaptative)
 
 def initialize_users(number_of_users, skills, tasks_number):
     users = []
@@ -103,21 +103,33 @@ def simulation(iterations):
         for user in users:
             simulate_user_behavior(user)
 
+def select_greedy_or_adaptative(greedy_or_adaptative):
+    if greedy_or_adaptative == "a":
+        return True
+    else:
+        return False
 
 
+# Get user input
+number_of_users = int(raw_input("Number of users: "))
+iterations = int(raw_input("Select number of iterations: "))
+adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
+
+# Load config file
 config = Config()
-recommender = initialize_recommender(config.skills, config.tasks_number)
 
-number_of_users = 3
+# Inicializing users
 users = initialize_users(number_of_users, config.skills, config.tasks_number)
 
-#print "Initial list of tasks:"
-#print_tasks(recommender.github.tasks)
+# Initialize recommender
+recommender = initialize_recommender(config.skills, config.tasks_number, adaptative)
 
-iterations = int(raw_input("Select number of iterations: "))
+# Run the simulation
 simulation(iterations)
 
+# Get the results
 statistics = get_statistics(recommender.github.tasks, config.skills)
 users_parameters = get_users_parameters(users)
 
+# Show the results
 print_results(statistics, users_parameters)

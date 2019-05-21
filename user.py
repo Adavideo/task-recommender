@@ -51,7 +51,7 @@ class User(object):
 
     def increment_skill(self, skill):
         threshold = self.skills_thresholds[skill]
-        print "threshold %s = %f" % (skill, threshold)
+        #print "threshold %s = %f" % (skill, threshold)
         if threshold > 0:
             self.skills_thresholds[skill] = threshold - 0.05
         if self.skills_thresholds[skill] < 0:
@@ -62,4 +62,4 @@ class User(object):
         self.increment_skill(skill)
         self.working_on_task.close_task()
         self.working_on_task = ""
-        print "%s skills: %s" % (self.name, self.skills_thresholds)
+        #print "%s skills: %s" % (self.name, self.skills_thresholds)
