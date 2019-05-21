@@ -49,6 +49,12 @@ class User(object):
         if self.time_to_finish_task <= 0:
             self.complete_current_task()
 
+    def increment_skill(self, skill):
+        if self.skills_thresholds[skill] > 0:
+            self.skills_thresholds[skill] -= 0.05
+
     def complete_current_task(self):
+        skill = self.working_on_task.skill
+        self.increment_skill(skill)
         self.working_on_task.close_task()
         self.working_on_task = ""
