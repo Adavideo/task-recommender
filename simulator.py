@@ -68,12 +68,6 @@ def get_statistics(tasks, skills):
             pending_tasks_per_type[task.skill] += 1
     return {"completed tasks":completed_tasks, "pending tasks":pending_tasks, "pending tasks per type":pending_tasks_per_type}
 
-def get_recommendations(user, recommender):
-    tasks = []
-    while not tasks:
-        tasks = recommender.recommend_tasks(user)
-    return tasks
-
 def get_users_parameters(users):
     stimuli = []
     tasks_performance = []
@@ -83,6 +77,12 @@ def get_users_parameters(users):
     return {"stimuli":stimuli, "tasks performance":tasks_performance}
 
 # Simulation
+
+def get_recommendations(user, recommender):
+    tasks = []
+    while not tasks:
+        tasks = recommender.recommend_tasks(user)
+    return tasks
 
 def asign_random_task(user, tasks):
     task_number = random.randint(1,len(tasks))
@@ -102,6 +102,8 @@ def simulation(iterations):
     for i in range(1, iterations+1):
         for user in users:
             simulate_user_behavior(user)
+
+
 
 config = Config()
 recommender = initialize_recommender(config.skills, config.tasks_number)

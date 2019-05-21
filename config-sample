@@ -19,6 +19,6 @@ minimum = 0.1
 maximum = 1
 
 [TaskPerformance]
-scale = 0.0-0.2
+scale = 0.0-0.5
 default = 1
 proportion_adjustment = 0.1

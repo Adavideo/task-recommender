@@ -23,6 +23,13 @@ class AdaptativeTaskAllocation:
         #print "threshold: %f  stimulus: %f  Response probability: %s" % (threshold, stimulus, response_probability)
         return response_probability
 
+    def ensure_scale(self, value, min, max):
+        if value < min:
+            value = min
+        elif value > max:
+            value = max
+        return value
+
     def calculate_task_performance(self, task_type):
         if not self.previous_proportion_of_tasks:
             return self.config.task_performance_default
@@ -48,6 +55,7 @@ class AdaptativeTaskAllocation:
                 proportion_adjustment = 0.0
             #print "%s total proportion adjustment: %f" % (task_type, proportion_adjustment)
             task_performance = scale[0] + medium + (decrement * medium) + proportion_adjustment
+            task_performance = self.ensure_scale(task_performance, scale[0], scale[1])
         #print "Task performance %s: %f" % (task_type, task_performance)
         return task_performance
 
@@ -66,16 +74,11 @@ class AdaptativeTaskAllocation:
             N = self.total_contributors
         N_act = self.active_contributors
         #print "contributors. total: %d  active: %d." % (N, N_act)
-        #print "%s stimulus = %s + %s - (%s * %s / %s)" % (task_type, stimulus, delta, alfa, N_act, N)
         new_stimulus = stimulus + delta - (alfa * N_act / N )
-        minimum_stimulus = self.config.minimum_stimulus
-        maximum_stimulus = self.config.maximum_stimulus
-        if new_stimulus < minimum_stimulus:
-            return minimum_stimulus
-        elif new_stimulus > maximum_stimulus:
-            return maximum_stimulus
-        else:
-            return new_stimulus
+        #print "%s stimulus = %s + %s - (%s * %s / %s) = %s" % (task_type, stimulus, delta, alfa, N_act, N, new_stimulus)
+        new_stimulus = self.ensure_scale(new_stimulus, self.config.minimum_stimulus, self.config.maximum_stimulus)
+        #print "stimulus %s: %f" % (task_type, new_stimulus)
+        return new_stimulus
 
     def calculate_active_contributors(self, tasks):
         contributors = []
