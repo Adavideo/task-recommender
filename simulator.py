@@ -22,6 +22,13 @@ def initialize_users(number_of_users, skills, tasks_number):
 
 # Util
 
+def print_header(adaptative, number_of_users, iterations):
+    if adaptative:
+        print "Adaptative. users: %d iterations: %d " % (number_of_users, iterations)
+    else:
+        print "Greedy. users: %d iterations: %d " % (number_of_users, iterations)
+
+
 def print_tasks(tasks):
     for task in tasks:
         if task.not_assigned():
@@ -30,12 +37,7 @@ def print_tasks(tasks):
             print "%s. Skill required: %s. Status: %s - assigned to: %s" % (task.name, task.skill, task.state, task.assigned_to)
     print "_________________________"
 
-def print_results(statistics, users_parameters):
-    print "-" * 20
-    print "STATISTICS"
-    print "Completed tasks: %d  Pending tasks: %d" % (statistics["completed tasks"],statistics["pending tasks"])
-    print "Pending tasks per type:"
-    print statistics["pending tasks per type"]
+def print_user_parameters(users_parameters):
     print "-" * 10
     print "USERS PARAMETERS:"
     print "Stimuli"
@@ -50,6 +52,17 @@ def print_results(statistics, users_parameters):
     for tasks_performance in users_parameters["tasks performance"]:
         print "User %d: %s" % (count, tasks_performance)
         count+= 1
+
+def print_pending_tasks(statistics):
+    print "Pending tasks per type:"
+    print statistics["pending tasks per type"]
+
+def print_results(statistics, users_parameters):
+    #print "-" * 20
+    #print "STATISTICS"
+    print "Completed tasks: %d  Pending tasks: %d" % (statistics["completed tasks"],statistics["pending tasks"])
+    #print_pending_tasks(statistics)
+    #print_user_parameters(users_parameters)
     #print "Final list of tasks:"
     #print_tasks(recommender.github.tasks)
 
@@ -91,17 +104,17 @@ def asign_random_task(user, tasks):
     selected_task.assign(user.name)
     user.assign(selected_task)
 
-def simulate_user_behavior(user):
+def simulate_user_behavior(user, recommender):
     if not user.working_on_task:
         recommended_tasks = get_recommendations(user, recommender)
         asign_random_task(user, recommended_tasks)
     else:
         user.work_on_task()
 
-def simulation(iterations):
+def simulate_iteration(iterations, users, recommender):
     for i in range(1, iterations+1):
         for user in users:
-            simulate_user_behavior(user)
+            simulate_user_behavior(user, recommender)
 
 def select_greedy_or_adaptative(greedy_or_adaptative):
     if greedy_or_adaptative == "a":
@@ -109,27 +122,43 @@ def select_greedy_or_adaptative(greedy_or_adaptative):
     else:
         return False
 
+def run_simulation(config, number_of_users, iterations, adaptative):
+    # Inicializing users
+    users = initialize_users(number_of_users, config.skills, config.tasks_number)
+
+    # Initialize recommender
+    recommender = initialize_recommender(config.skills, config.tasks_number, adaptative)
+
+    # Run the simulation
+    simulate_iteration(iterations, users, recommender)
+
+    # Get the results
+    statistics = get_statistics(recommender.github.tasks, config.skills)
+    users_parameters = get_users_parameters(users)
+
+    # Show the results
+    print_results(statistics, users_parameters)
+
+    return statistics
+
 
 # Get user input
 number_of_users = int(raw_input("Number of users: "))
+#number_of_users = 5
 iterations = int(raw_input("Select number of iterations: "))
-adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
+#iterations = 500
+#adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
 
 # Load config file
 config = Config()
 
-# Inicializing users
-users = initialize_users(number_of_users, config.skills, config.tasks_number)
 
-# Initialize recommender
-recommender = initialize_recommender(config.skills, config.tasks_number, adaptative)
+adaptative = True
+print_header(adaptative, number_of_users, iterations)
+for i in range(0,10):
+    run_simulation(config, number_of_users, iterations, adaptative)
 
-# Run the simulation
-simulation(iterations)
-
-# Get the results
-statistics = get_statistics(recommender.github.tasks, config.skills)
-users_parameters = get_users_parameters(users)
-
-# Show the results
-print_results(statistics, users_parameters)
+adaptative = False
+print_header(adaptative, number_of_users, iterations)
+for i in range(0,10):
+    run_simulation(config, number_of_users, iterations, adaptative)
