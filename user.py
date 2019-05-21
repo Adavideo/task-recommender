@@ -9,6 +9,7 @@ class User(object):
         self.tasks_number = tasks_number
         self.skills_thresholds = {}
         self.working_on_task = ""
+        self.time_to_finish_task = 0
 
     def initialize_task_allocation(self):
         self.task_allocation = AdaptativeTaskAllocation(self.skills_thresholds)
@@ -41,6 +42,12 @@ class User(object):
 
     def assign(self, task):
         self.working_on_task = task
+        self.time_to_finish_task = 10 * self.skills_thresholds[task.skill]
+
+    def work_on_task(self):
+        self.time_to_finish_task -= 1
+        if self.time_to_finish_task <= 0:
+            self.complete_current_task()
 
     def complete_current_task(self):
         self.working_on_task.close_task()

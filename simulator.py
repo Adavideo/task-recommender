@@ -96,7 +96,7 @@ def simulate_user_behavior(user):
         recommended_tasks = get_recommendations(user, recommender)
         asign_random_task(user, recommended_tasks)
     else:
-        user.complete_current_task()
+        user.work_on_task()
 
 def simulation(iterations):
     for i in range(1, iterations+1):
