@@ -9,7 +9,6 @@ import random
 
 def initialize_recommender(skills, tasks_number, adaptative):
     simulator = GithubSimulator(skills, tasks_number * 2, 5)
-    #simulator.update()
     return Recommender(simulator, adaptative)
 
 def initialize_users(number_of_users, skills, tasks_number):
@@ -111,7 +110,7 @@ def simulate_user_behavior(user, recommender):
     #print_tasks(recommender.github.tasks)
 
 def simulate_iteration(iterations, users, recommender):
-    for i in range(1, iterations):
+    for i in range(1, iterations+1):
         recommender.github.update()
         for user in users:
             simulate_user_behavior(user, recommender)
