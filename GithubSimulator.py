@@ -24,16 +24,27 @@ class GithubSimulator:
             tasks.append(task)
         return tasks
 
+    def print_tasks(self):
+        for task in self.tasks:
+            if task.not_assigned():
+                print "%s %s %s" % (task.name, task.skill, task.state)
+            else:
+                print "%s %s %s - assigned to: %s" % (task.name, task.skill, task.state, task.assigned_to)
+        print "-"*10
+
     def add_new_task(self):
         task_number = len(self.tasks) + 1
         new_task = self.mock_task(task_number)
+        #print "tareas antes: %d" % len(self.tasks)
+        #self.print_tasks()
         self.tasks.append(new_task)
+        #print "tareas despues: %d" % len(self.tasks)
+        #self.print_tasks()
 
     def update(self):
         self.add_new_task()
 
     def import_tasks(self):
-        self.update()
         open_tasks = []
         for task in self.tasks:
             if task.state == "open":

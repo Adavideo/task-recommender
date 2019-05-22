@@ -9,6 +9,7 @@ import random
 
 def initialize_recommender(skills, tasks_number, adaptative):
     simulator = GithubSimulator(skills, tasks_number * 2, 5)
+    #simulator.update()
     return Recommender(simulator, adaptative)
 
 def initialize_users(number_of_users, skills, tasks_number):
@@ -91,38 +92,31 @@ def get_users_parameters(users):
 
 # Simulation
 
-def get_recommendations(user, recommender):
-    tasks = []
-    while not tasks:
-        tasks = recommender.recommend_tasks(user)
-    return tasks
-
 def asign_random_task(user, tasks):
-    task_number = random.randint(1,len(tasks))
+    number_of_tasks = len(tasks)
+    task_number = random.randint(1,number_of_tasks)
     selected_task = tasks[task_number-1]
     #print "selecting: %s" % (selected_task.name)
     selected_task.assign(user.name)
     user.assign(selected_task)
 
 def simulate_user_behavior(user, recommender):
+    #print_tasks(recommender.github.tasks)
     if not user.working_on_task:
-        recommended_tasks = get_recommendations(user, recommender)
-        asign_random_task(user, recommended_tasks)
+        recommended_tasks = recommender.recommend_tasks(user)
+        if recommended_tasks:
+            asign_random_task(user, recommended_tasks)
     else:
         user.work_on_task()
+    #print_tasks(recommender.github.tasks)
 
 def simulate_iteration(iterations, users, recommender):
-    for i in range(1, iterations+1):
+    for i in range(1, iterations):
+        recommender.github.update()
         for user in users:
             simulate_user_behavior(user, recommender)
 
-def select_greedy_or_adaptative(greedy_or_adaptative):
-    if greedy_or_adaptative == "a":
-        return True
-    else:
-        return False
-
-def run_simulation(config, number_of_users, iterations, adaptative):
+def run_simulation(config, iterations, number_of_users, adaptative):
     # Inicializing users
     users = initialize_users(number_of_users, config.skills, config.tasks_number)
 
@@ -141,24 +135,24 @@ def run_simulation(config, number_of_users, iterations, adaptative):
 
     return statistics
 
+def run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative):
+    print_header(adaptative, num_users, num_iterations)
+    for i in range(0,num_simulations):
+        run_simulation(config, num_iterations, num_users, adaptative)
 
-# Get user input
-number_of_users = int(raw_input("Number of users: "))
-#number_of_users = 5
-iterations = int(raw_input("Select number of iterations: "))
-#iterations = 500
-#adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
 
 # Load config file
 config = Config()
 
-
-adaptative = True
-print_header(adaptative, number_of_users, iterations)
-for i in range(0,10):
-    run_simulation(config, number_of_users, iterations, adaptative)
+# Get user input
+#number_of_users = int(raw_input("Number of users: "))
+num_users = 5
+#iterations = int(raw_input("Select number of iterations: "))
+num_iterations = 300
+#adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
+num_simulations = 10
 
 adaptative = False
-print_header(adaptative, number_of_users, iterations)
-for i in range(0,10):
-    run_simulation(config, number_of_users, iterations, adaptative)
+run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative)
+adaptative = True
+run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative)
