@@ -22,7 +22,7 @@ def initialize_users(number_of_users, skills, tasks_number):
 
 # Util
 
-def print_header(adaptative, number_of_users, iterations):
+def print_simulation_header(adaptative, number_of_users, iterations):
     if adaptative:
         print "Adaptative. users: %d iterations: %d " % (number_of_users, iterations)
     else:
@@ -57,15 +57,14 @@ def print_pending_tasks(statistics):
     print "Pending tasks per type:"
     print statistics["pending tasks per type"]
 
-def print_results(statistics, users_parameters):
-    #print "-" * 20
-    #print "STATISTICS"
-    print "Completed tasks: %d  Pending tasks: %d" % (statistics["completed tasks"],statistics["pending tasks"])
-    #print_pending_tasks(statistics)
-    #print_user_parameters(users_parameters)
-    #print "Final list of tasks:"
-    #print_tasks(recommender.github.tasks)
+def print_statistics(statistics):
+    print "-" * 20
+    print "STATISTICS"
+    print statistics
 
+
+
+# Extracting and preparing results
 
 def get_statistics(tasks, skills):
     completed_tasks = 0
@@ -81,6 +80,29 @@ def get_statistics(tasks, skills):
             pending_tasks_per_type[task.skill] += 1
     return {"completed tasks":completed_tasks, "pending tasks":pending_tasks, "pending tasks per type":pending_tasks_per_type}
 
+def calculate_simulations_average(simulations_statistics):
+    num_simulations = len(simulations_statistics)
+    print "Simulations: %d" % num_simulations
+    total_completed_tasks = 0
+    total_pending_tasks = 0
+    for simulation_results in simulations_statistics:
+        total_completed_tasks += simulation_results["completed tasks"]
+        total_pending_tasks += simulation_results["pending tasks"]
+        print "Completed tasks: %d  Pending tasks: %d" % (simulation_results["completed tasks"],simulation_results["pending tasks"])
+    #print_pending_tasks(statistics)
+    print "completed = %f  pending = %f" % (total_completed_tasks, total_pending_tasks)
+    average_completed_tasks = total_completed_tasks / num_simulations
+    average_pending_tasks = total_pending_tasks / num_simulations
+    return {"average_completed_tasks":average_completed_tasks, "average_pending_tasks": average_pending_tasks}
+
+def compare_statistics(greedy_simulations_statistics, adaptative_simulations_statistics):
+    greedy_average_results = calculate_simulations_average(greedy_simulations_statistics)
+    adaptative_average_results = calculate_simulations_average(adaptative_simulations_statistics)
+    print "Greedy"
+    print greedy_average_results
+    print "Adaptative"
+    print adaptative_average_results
+
 def get_users_parameters(users):
     stimuli = []
     tasks_performance = []
@@ -88,6 +110,7 @@ def get_users_parameters(users):
         stimuli.append(user.task_allocation.tasks_stimuli)
         tasks_performance.append(user.task_allocation.tasks_performance)
     return {"stimuli":stimuli, "tasks performance":tasks_performance}
+
 
 # Simulation
 
@@ -127,18 +150,21 @@ def run_simulation(config, iterations, number_of_users, adaptative):
 
     # Get the results
     statistics = get_statistics(recommender.github.tasks, config.skills)
-    users_parameters = get_users_parameters(users)
+    #users_parameters = get_users_parameters(users)
 
     # Show the results
-    print_results(statistics, users_parameters)
+    # print_statistics(statistics)
+    # print_user_parameters(users_parameters)
 
     return statistics
 
 def run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative):
-    print_header(adaptative, num_users, num_iterations)
+    print_simulation_header(adaptative, num_users, num_iterations)
+    statistics = []
     for i in range(0,num_simulations):
-        run_simulation(config, num_iterations, num_users, adaptative)
-
+        result = run_simulation(config, num_iterations, num_users, adaptative)
+        statistics.append(result)
+    return statistics
 
 # Load config file
 config = Config()
@@ -151,7 +177,11 @@ num_iterations = 300
 #adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
 num_simulations = 10
 
+# Runing the simulations for adaptative and greedy task allocation
 adaptative = False
-run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative)
+greedy_statistics = run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative)
 adaptative = True
-run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative)
+adaptative_statistics = run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative)
+
+# Comparing the results of greedy and adaptative simulations
+results = compare_statistics(greedy_statistics, adaptative_statistics)
