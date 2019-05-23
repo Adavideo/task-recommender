@@ -24,9 +24,9 @@ def initialize_users(number_of_users, skills, tasks_number):
 
 def print_simulation_header(adaptative, number_of_users, iterations):
     if adaptative:
-        print "Adaptative. users: %d iterations: %d " % (number_of_users, iterations)
+        print "Running adaptative simulation. users: %d iterations: %d " % (number_of_users, iterations)
     else:
-        print "Greedy. users: %d iterations: %d " % (number_of_users, iterations)
+        print "Running greedy simulation. users: %d iterations: %d " % (number_of_users, iterations)
 
 
 def print_tasks(tasks):
@@ -82,26 +82,32 @@ def get_statistics(tasks, skills):
 
 def calculate_simulations_average(simulations_statistics):
     num_simulations = len(simulations_statistics)
-    print "Simulations: %d" % num_simulations
+    #print "Simulations: %d" % num_simulations
     total_completed_tasks = 0
     total_pending_tasks = 0
     for simulation_results in simulations_statistics:
         total_completed_tasks += simulation_results["completed tasks"]
         total_pending_tasks += simulation_results["pending tasks"]
-        print "Completed tasks: %d  Pending tasks: %d" % (simulation_results["completed tasks"],simulation_results["pending tasks"])
+        #print "Completed tasks: %d  Pending tasks: %d" % (simulation_results["completed tasks"],simulation_results["pending tasks"])
     #print_pending_tasks(statistics)
-    print "completed = %f  pending = %f" % (total_completed_tasks, total_pending_tasks)
+    #print "completed = %f  pending = %f" % (total_completed_tasks, total_pending_tasks)
     average_completed_tasks = total_completed_tasks / num_simulations
     average_pending_tasks = total_pending_tasks / num_simulations
     return {"average_completed_tasks":average_completed_tasks, "average_pending_tasks": average_pending_tasks}
 
+def calculate_improvement(greedy, adaptative):
+    #print "improvement = (%s * 100 / %s) - 100" % (adaptative, greedy)
+    improvement = (adaptative * 100 / greedy) - 100
+    return improvement
+
 def compare_statistics(greedy_simulations_statistics, adaptative_simulations_statistics):
     greedy_average_results = calculate_simulations_average(greedy_simulations_statistics)
     adaptative_average_results = calculate_simulations_average(adaptative_simulations_statistics)
-    print "Greedy"
-    print greedy_average_results
-    print "Adaptative"
-    print adaptative_average_results
+    completed_tasks_improvement = calculate_improvement(greedy_average_results["average_completed_tasks"], adaptative_average_results["average_completed_tasks"])
+    #print "completed_tasks_improvement = %s" % completed_tasks_improvement
+    pending_tasks_improvement = calculate_improvement(greedy_average_results["average_pending_tasks"], adaptative_average_results["average_pending_tasks"])
+    #print "pending_tasks_improvement = %s" % pending_tasks_improvement
+    return {"completed_tasks":completed_tasks_improvement, "pending_tasks":pending_tasks_improvement}
 
 def get_users_parameters(users):
     stimuli = []
@@ -185,3 +191,4 @@ adaptative_statistics = run_several_simulations(config, num_simulations, num_ite
 
 # Comparing the results of greedy and adaptative simulations
 results = compare_statistics(greedy_statistics, adaptative_statistics)
+print results
