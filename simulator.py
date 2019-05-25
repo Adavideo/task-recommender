@@ -63,6 +63,12 @@ def print_statistics(statistics):
     print "STATISTICS"
     print statistics
 
+def print_simulations_comparisions(results):
+    print "Adaptative Task Allocation simulations compared with the greedy simulation (on average):"
+    print " - Completed %d%% more tasks" % results["completed_tasks"]
+    pending = results["pending_tasks"] * -1
+    print " - Had %d%% less pending tasks when finishing the simulation" % pending
+
 
 
 # Extracting and preparing results
@@ -191,9 +197,9 @@ config = Config()
 #number_of_users = int(raw_input("Number of users: "))
 #num_users = 5
 #iterations = int(raw_input("Select number of iterations: "))
-num_iterations = 30
+num_iterations = 50
 #adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
-num_simulations = 2
+num_simulations = 10
 
 # Create stages
 stages = generate_stages()
@@ -207,4 +213,4 @@ for stage in stages:
 
 # Comparing the results of greedy and adaptative simulations
 results = compare_statistics(greedy_statistics, adaptative_statistics)
-print results
+print_simulations_comparisions(results)
