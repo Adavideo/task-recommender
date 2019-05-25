@@ -3,6 +3,7 @@ from Recommender import Recommender
 from task import Task
 from Config import Config
 from GithubSimulator import GithubSimulator
+from stage import Stage
 import random
 
 # Initialization
@@ -16,17 +17,17 @@ def initialize_users(number_of_users, skills, tasks_number):
     for i in range(1,number_of_users+1):
         user_name = "TestUser%d" % i
         test_user = User(user_name, "", tasks_number)
-        test_user.load_skills_from_file(skills)
+        #test_user.load_skills_from_file(skills)
         users.append(test_user)
     return users
 
 # Util
 
-def print_simulation_header(adaptative, number_of_users, iterations):
+def print_simulation_header(adaptative, iterations):
     if adaptative:
-        print "Running adaptative simulation. users: %d iterations: %d " % (number_of_users, iterations)
+        print "Running adaptative simulation. iterations: %d " % iterations
     else:
-        print "Running greedy simulation. users: %d iterations: %d " % (number_of_users, iterations)
+        print "Running greedy simulation. iterations: %d " % iterations
 
 
 def print_tasks(tasks):
@@ -138,21 +139,21 @@ def simulate_user_behavior(user, recommender):
         user.work_on_task()
     #print_tasks(recommender.github.tasks)
 
-def simulate_iteration(iterations, users, recommender):
+def simulate_iteration(iterations, stage, recommender):
     for i in range(1, iterations+1):
         recommender.github.update()
-        for user in users:
+        for user in stage.users:
             simulate_user_behavior(user, recommender)
 
-def run_simulation(config, iterations, number_of_users, adaptative):
+def run_simulation(num_iterations, adaptative_mode, stage):
     # Inicializing users
-    users = initialize_users(number_of_users, config.skills, config.tasks_number)
+    #users = initialize_users(number_of_users, config.skills, config.tasks_number)
 
     # Initialize recommender
-    recommender = initialize_recommender(config.skills, config.tasks_number, adaptative)
+    recommender = initialize_recommender(config.skills, config.tasks_number, adaptative_mode)
 
     # Run the simulation
-    simulate_iteration(iterations, users, recommender)
+    simulate_iteration(num_iterations, stage, recommender)
 
     # Get the results
     statistics = get_statistics(recommender.github.tasks, config.skills)
@@ -164,30 +165,45 @@ def run_simulation(config, iterations, number_of_users, adaptative):
 
     return statistics
 
-def run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative):
-    print_simulation_header(adaptative, num_users, num_iterations)
+def run_several_simulations(num_simulations, num_iterations, adaptative_mode, stage):
+    print_simulation_header(adaptative_mode, num_iterations)
     statistics = []
     for i in range(0,num_simulations):
-        result = run_simulation(config, num_iterations, num_users, adaptative)
+        result = run_simulation(num_iterations, adaptative_mode, stage)
+        #result = run_simulation(config, num_iterations, num_users, adaptative)
         statistics.append(result)
     return statistics
+
+
+def generate_stages():
+    stages = []
+    stage1 = Stage(config)
+    user_types = [1, 1, 1, 2, 3]
+    stage1.initialize_users(user_types)
+    #stage1.initialize_users(config.skills, users_skills, config.tasks_number)
+    stages.append(stage1)
+    return stages
 
 # Load config file
 config = Config()
 
 # Get user input
 #number_of_users = int(raw_input("Number of users: "))
-num_users = 5
+#num_users = 5
 #iterations = int(raw_input("Select number of iterations: "))
-num_iterations = 300
+num_iterations = 30
 #adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
-num_simulations = 10
+num_simulations = 2
 
-# Runing the simulations for adaptative and greedy task allocation
-adaptative = False
-greedy_statistics = run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative)
-adaptative = True
-adaptative_statistics = run_several_simulations(config, num_simulations, num_iterations, num_users, adaptative)
+# Create stages
+stages = generate_stages()
+
+for stage in stages:
+    # Runing the simulations for adaptative and greedy task allocation
+    adaptative_mode = False
+    greedy_statistics = run_several_simulations(num_simulations, num_iterations, adaptative_mode, stage)
+    adaptative_mode = True
+    adaptative_statistics = run_several_simulations(num_simulations, num_iterations, adaptative_mode, stage)
 
 # Comparing the results of greedy and adaptative simulations
 results = compare_statistics(greedy_statistics, adaptative_statistics)
