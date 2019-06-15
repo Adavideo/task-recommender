@@ -27,9 +27,18 @@ class Stage(object):
         return user
 
     def initialize_users(self, user_types):
-        for user_type in user_types:
+        self.user_types = user_types
+        self.reset_users()
+
+    def reset_users(self):
+        self.users = []
+        for user_type in self.user_types:
             new_user = self.generate_user(user_type)
             self.users.append(new_user)
 
-        #for user in self.users:
-        #    print "%s %s" % (user.name, user.skills_thresholds)
+    def description(self):
+        #description = "Stage with users " + self.users
+        description = "Stage with users: %s\n" % self.user_types
+        for user in self.users:
+            description += "%s %s\n" % (user.name, user.skills_thresholds)
+        return description
