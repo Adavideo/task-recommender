@@ -62,6 +62,7 @@ def print_statistics(statistics):
     print "-" * 20
     print "STATISTICS"
     print statistics
+    #print "Completed tasks: %d  Pending tasks: %d" % (statistics["completed tasks"], statistics["pending tasks"])
 
 def print_simulations_comparisions(results):
     print "Adaptative Task Allocation simulations compared with the greedy simulation (on average):"
@@ -77,21 +78,24 @@ def get_statistics(tasks, skills):
     completed_tasks = 0
     pending_tasks = 0
     pending_tasks_per_type = {}
-    for skill in skills:
-        pending_tasks_per_type[skill] = 0
+    #for skill in skills:
+    #    pending_tasks_per_type[skill] = 0
     for task in tasks:
         if task.is_closed():
             completed_tasks += 1
         else:
             pending_tasks += 1
-            pending_tasks_per_type[task.skill] += 1
-    return {"completed tasks":completed_tasks, "pending tasks":pending_tasks, "pending tasks per type":pending_tasks_per_type}
+            #pending_tasks_per_type[task.skill] += 1
+    #return {"completed tasks":completed_tasks, "pending tasks":pending_tasks, "pending tasks per type":pending_tasks_per_type}
+    return {"completed tasks":completed_tasks, "pending tasks":pending_tasks}
 
 def calculate_simulations_average(simulations_statistics):
     num_simulations = len(simulations_statistics)
     #print "Simulations: %d" % num_simulations
-    total_completed_tasks = 0
-    total_pending_tasks = 0
+    total_completed_tasks = 0.0
+    total_pending_tasks = 0.0
+    #print "/" * 10
+    #print simulations_statistics
     for simulation_results in simulations_statistics:
         total_completed_tasks += simulation_results["completed tasks"]
         total_pending_tasks += simulation_results["pending tasks"]
@@ -100,11 +104,17 @@ def calculate_simulations_average(simulations_statistics):
     #print "completed = %f  pending = %f" % (total_completed_tasks, total_pending_tasks)
     average_completed_tasks = total_completed_tasks / num_simulations
     average_pending_tasks = total_pending_tasks / num_simulations
+    print "average completed %f pending %f" % (average_completed_tasks, average_pending_tasks)
     return {"average_completed_tasks":average_completed_tasks, "average_pending_tasks": average_pending_tasks}
 
 def calculate_improvement(greedy, adaptative):
     #print "improvement = (%s * 100 / %s) - 100" % (adaptative, greedy)
-    improvement = (adaptative * 100 / greedy) - 100
+    print "greedy: %f adaptative: %f" % (greedy, adaptative)
+    if greedy == 0.0:
+        improvement = adaptative * 100
+    else:
+        improvement = (adaptative * 100 / greedy) - 100
+    #print "improvement = %f" % improvement
     return improvement
 
 def compare_statistics(greedy_simulations_statistics, adaptative_simulations_statistics):
@@ -147,6 +157,7 @@ def simulate_user_behavior(user, recommender):
 
 def simulate_iteration(iterations, stage, recommender):
     for i in range(1, iterations+1):
+        #print "Iteration %d of %d" % (i, num_iterations)
         recommender.github.update()
         for user in stage.users:
             simulate_user_behavior(user, recommender)
@@ -166,6 +177,7 @@ def run_simulation(num_iterations, adaptative_mode, stage):
     #users_parameters = get_users_parameters(users)
 
     # Show the results
+    print "Completed tasks: %d  Pending tasks: %d" % (statistics["completed tasks"], statistics["pending tasks"])
     # print_statistics(statistics)
     # print_user_parameters(users_parameters)
 
@@ -174,7 +186,8 @@ def run_simulation(num_iterations, adaptative_mode, stage):
 def run_several_simulations(num_simulations, num_iterations, adaptative_mode, stage):
     print_simulation_header(adaptative_mode, num_iterations)
     statistics = []
-    for i in range(0,num_simulations):
+    for i in range(1,num_simulations+1):
+        print "Simulation %d of %d" % (i, num_simulations)
         result = run_simulation(num_iterations, adaptative_mode, stage)
         #result = run_simulation(config, num_iterations, num_users, adaptative)
         statistics.append(result)
@@ -199,7 +212,7 @@ config = Config()
 #iterations = int(raw_input("Select number of iterations: "))
 num_iterations = 50
 #adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
-num_simulations = 10
+num_simulations = 5
 
 # Create stages
 stages = generate_stages()
