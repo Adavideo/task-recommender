@@ -109,7 +109,7 @@ def calculate_simulations_average(simulations_statistics):
 
 def calculate_improvement(greedy, adaptative):
     #print "improvement = (%s * 100 / %s) - 100" % (adaptative, greedy)
-    print "greedy: %f adaptative: %f" % (greedy, adaptative)
+    #print "greedy: %f adaptative: %f" % (greedy, adaptative)
     if greedy == 0.0:
         improvement = adaptative * 100
     else:
@@ -178,7 +178,7 @@ def run_simulation(num_iterations, adaptative_mode, stage):
     #users_parameters = get_users_parameters(users)
 
     # Show the results
-    print "Completed tasks: %d  Pending tasks: %d" % (statistics["completed tasks"], statistics["pending tasks"])
+    #print "Completed tasks: %d  Pending tasks: %d" % (statistics["completed tasks"], statistics["pending tasks"])
     # print_statistics(statistics)
     # print_user_parameters(users_parameters)
 
@@ -188,7 +188,7 @@ def run_several_simulations(num_simulations, num_iterations, adaptative_mode, st
     print_simulation_header(adaptative_mode, num_iterations)
     statistics = []
     for i in range(1,num_simulations+1):
-        print "Simulation %d of %d" % (i, num_simulations)
+        #print "Simulation %d of %d" % (i, num_simulations)
         result = run_simulation(num_iterations, adaptative_mode, stage)
         #result = run_simulation(config, num_iterations, num_users, adaptative)
         statistics.append(result)
@@ -197,11 +197,25 @@ def run_several_simulations(num_simulations, num_iterations, adaptative_mode, st
 
 def generate_stages():
     stages = []
+
     stage1 = Stage(config)
-    user_types = [1, 1, 1, 2, 3]
+    user_types = [1, 2, 3, 4, 5]
     stage1.initialize_users(user_types)
     #stage1.initialize_users(config.skills, users_skills, config.tasks_number)
     stages.append(stage1)
+
+    stage2 = Stage(config)
+    user_types = [1, 1, 1, 2, 3]
+    stage2.initialize_users(user_types)
+    #stage1.initialize_users(config.skills, users_skills, config.tasks_number)
+    stages.append(stage2)
+
+    stage3 = Stage(config)
+    user_types = [1, 1, 1, 1, 1]
+    stage3.initialize_users(user_types)
+    #stage1.initialize_users(config.skills, users_skills, config.tasks_number)
+    stages.append(stage3)
+
     return stages
 
 # Load config file
@@ -213,14 +227,13 @@ config = Config()
 #iterations = int(raw_input("Select number of iterations: "))
 num_iterations = 50
 #adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
-num_simulations = 10
+num_simulations = 20
 
 # Create stages
 stages = generate_stages()
 
 for stage in stages:
-    print "Simulation for stage:"
-    print stage.description()
+    print "\n\nSimulation for %s" % stage.description()
     # Runing the simulations for adaptative and greedy task allocation
     adaptative_mode = False
     greedy_statistics = run_several_simulations(num_simulations, num_iterations, adaptative_mode, stage)

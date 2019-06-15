@@ -39,6 +39,6 @@ class Stage(object):
     def description(self):
         #description = "Stage with users " + self.users
         description = "Stage with users: %s\n" % self.user_types
-        for user in self.users:
-            description += "%s %s\n" % (user.name, user.skills_thresholds)
+        #for user in self.users:
+        #    description += "%s %s\n" % (user.name, user.skills_thresholds)
         return description
