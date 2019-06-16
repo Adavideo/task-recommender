@@ -194,29 +194,20 @@ def run_several_simulations(num_simulations, num_iterations, adaptative_mode, st
         statistics.append(result)
     return statistics
 
+def add_stage(user_types):
+    stage = Stage(config)
+    stage.initialize_users(user_types)
+    stages.append(stage)
 
 def generate_stages():
-    stages = []
+    user_types1 = [1, 2, 3, 4, 5]
+    user_types2 = [1, 1, 1, 2, 3]
+    user_types3 = [1, 1, 1, 1, 1]
 
-    stage1 = Stage(config)
-    user_types = [1, 2, 3, 4, 5]
-    stage1.initialize_users(user_types)
-    #stage1.initialize_users(config.skills, users_skills, config.tasks_number)
-    stages.append(stage1)
+    add_stage(user_types1)
+    add_stage(user_types2)
+    add_stage(user_types3)
 
-    stage2 = Stage(config)
-    user_types = [1, 1, 1, 2, 3]
-    stage2.initialize_users(user_types)
-    #stage1.initialize_users(config.skills, users_skills, config.tasks_number)
-    stages.append(stage2)
-
-    stage3 = Stage(config)
-    user_types = [1, 1, 1, 1, 1]
-    stage3.initialize_users(user_types)
-    #stage1.initialize_users(config.skills, users_skills, config.tasks_number)
-    stages.append(stage3)
-
-    return stages
 
 # Load config file
 config = Config()
@@ -230,7 +221,8 @@ num_iterations = 50
 num_simulations = 20
 
 # Create stages
-stages = generate_stages()
+stages = []
+generate_stages()
 
 for stage in stages:
     print "\n\nSimulation for %s" % stage.description()
