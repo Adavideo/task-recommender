@@ -3,15 +3,32 @@ from task import Task
 
 class GithubSimulator:
 
-    def __init__(self, skills, number_of_tasks, number_of_contributors):
+    def __init__(self, skills, number_of_tasks, number_of_contributors, tasks_probabilities):
         self.last_update = ""
         self.skills = skills
+        self.tasks_probabilities = tasks_probabilities
         self.tasks = self.tasks_mockup(number_of_tasks)
         self.number_of_contributors = number_of_contributors
 
+    def task_roulete(self):
+        #print self.tasks_probabilities
+        r = random.randint(0,100)
+        #print r
+        added_probability = 0
+        skill_index = 0
+        for probability in self.tasks_probabilities:
+            added_probability += probability
+            if r <= added_probability:
+                task_type = self.skills[skill_index]
+                #print "selected: %s" % task_type
+                break
+            else:
+                skill_index += 1
+        #print "Returning %s" % task_type
+        return task_type
+
     def mock_task(self, task_number):
-        skill_index = random.randint(0,4)
-        skill = self.skills[skill_index]
+        skill = self.task_roulete()
         name = "Task "+ str(task_number)
         task = Task(task_number, name, "www.github.com", skill,"")
         task.update_status("open")

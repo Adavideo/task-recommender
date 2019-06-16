@@ -8,8 +8,10 @@ import random
 
 # Initialization
 
-def initialize_recommender(skills, tasks_number, adaptative):
-    simulator = GithubSimulator(skills, tasks_number * 2, 5)
+def initialize_recommender(adaptative, tasks_probabilities):
+    tasks_number = config.tasks_number * 2
+    contributors = 5
+    simulator = GithubSimulator(config.skills, tasks_number, contributors, tasks_probabilities)
     return Recommender(simulator, adaptative)
 
 def initialize_users(number_of_users, skills, tasks_number):
@@ -163,11 +165,8 @@ def simulate_iterations(iterations, stage, recommender):
             simulate_user_behavior(user, recommender)
 
 def run_simulation(num_iterations, adaptative_mode, stage):
-    # Inicializing users
-    #users = initialize_users(number_of_users, config.skills, config.tasks_number)
-
     # Initialize recommender
-    recommender = initialize_recommender(config.skills, config.tasks_number, adaptative_mode)
+    recommender = initialize_recommender(adaptative_mode, stage.tasks_probabilities)
 
     # Run the simulation
     simulate_iterations(num_iterations, stage, recommender)
@@ -194,9 +193,8 @@ def run_several_simulations(num_simulations, num_iterations, adaptative_mode, st
         statistics.append(result)
     return statistics
 
-def add_stage(user_types):
-    stage = Stage(config)
-    stage.initialize_users(user_types)
+def add_stage(user_types, tasks_probabilities):
+    stage = Stage(config, user_types, tasks_probabilities)
     stages.append(stage)
 
 def generate_stages():
@@ -204,9 +202,21 @@ def generate_stages():
     user_types2 = [1, 1, 1, 2, 3]
     user_types3 = [1, 1, 1, 1, 1]
 
-    add_stage(user_types1)
-    add_stage(user_types2)
-    add_stage(user_types3)
+    tasks_probabilities1 = [20, 20, 20, 20, 20]
+    tasks_probabilities2 = [0, 0, 0, 0, 100]
+    tasks_probabilities3 = [100, 0, 0, 0, 0]
+
+    add_stage(user_types1, tasks_probabilities1)
+    add_stage(user_types2, tasks_probabilities1)
+    add_stage(user_types3, tasks_probabilities1)
+
+    add_stage(user_types1, tasks_probabilities2)
+    add_stage(user_types2, tasks_probabilities2)
+    add_stage(user_types3, tasks_probabilities2)
+
+    add_stage(user_types1, tasks_probabilities3)
+    add_stage(user_types2, tasks_probabilities3)
+    add_stage(user_types3, tasks_probabilities3)    
 
 
 # Load config file

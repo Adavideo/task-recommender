@@ -3,10 +3,12 @@ from Config import Config
 
 class Stage(object):
 
-    def __init__(self, config):
+    def __init__(self, config, user_types, tasks_probabilities):
         self.num_tasks = config.tasks_number
         self.skills = config.skills
-        self.users = []
+        self.tasks_probabilities = tasks_probabilities
+        self.user_types = user_types
+        self.reset_users()
 
     def set_user_skills(self, user, type):
         count = 0
@@ -26,10 +28,6 @@ class Stage(object):
         self.set_user_skills(user, type)
         return user
 
-    def initialize_users(self, user_types):
-        self.user_types = user_types
-        self.reset_users()
-
     def reset_users(self):
         self.users = []
         for user_type in self.user_types:
@@ -38,7 +36,7 @@ class Stage(object):
 
     def description(self):
         #description = "Stage with users " + self.users
-        description = "Stage with users: %s\n" % self.user_types
+        description = "Stage with users: %s - tasks probabilities: %s \n" % (self.user_types, self.tasks_probabilities)
         #for user in self.users:
         #    description += "%s %s\n" % (user.name, user.skills_thresholds)
         return description
