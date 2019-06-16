@@ -184,7 +184,7 @@ def run_simulation(num_iterations, adaptative_mode, stage):
     return statistics
 
 def run_several_simulations(num_simulations, num_iterations, adaptative_mode, stage):
-    print_simulation_header(adaptative_mode, num_iterations)
+    #print_simulation_header(adaptative_mode, num_iterations)
     statistics = []
     for i in range(1,num_simulations+1):
         #print "Simulation %d of %d" % (i, num_simulations)
@@ -203,8 +203,8 @@ def generate_stages():
     user_types3 = [1, 1, 1, 1, 1]
 
     tasks_probabilities1 = [20, 20, 20, 20, 20]
-    tasks_probabilities2 = [0, 0, 0, 0, 100]
-    tasks_probabilities3 = [100, 0, 0, 0, 0]
+    tasks_probabilities2 = [10, 10, 10, 10, 60]
+    tasks_probabilities3 = [60, 10, 10, 10, 10]
 
     add_stage(user_types1, tasks_probabilities1)
     add_stage(user_types2, tasks_probabilities1)
@@ -216,7 +216,7 @@ def generate_stages():
 
     add_stage(user_types1, tasks_probabilities3)
     add_stage(user_types2, tasks_probabilities3)
-    add_stage(user_types3, tasks_probabilities3)    
+    add_stage(user_types3, tasks_probabilities3)
 
 
 # Load config file
