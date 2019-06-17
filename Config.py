@@ -26,6 +26,7 @@ class Config:
         self.minimum_stimulus = float(config['Stimuli']['minimum'])
         self.maximum_stimulus = float(config['Stimuli']['maximum'])
         # [TaskPerformance]
+        self.task_performance_method = config['TaskPerformance']['method']
         task_performance_scale = config['TaskPerformance']['scale'].split("-")
         self.task_performance_scale = [float(task_performance_scale[0]),float(task_performance_scale[1])]
         self.task_performance_default = float(config['TaskPerformance']['default'])

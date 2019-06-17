@@ -9,6 +9,10 @@ class AdaptativeTaskAllocation:
             self.config.load_recommender_parametters()
             self.tasks_stimuli = {}
             self.tasks_performance = {}
+            if self.config.task_performance_method == "2":
+                self.task_performance_mode2 = True
+            else:
+                self.task_performance_mode2 = False
             self.proportion_of_tasks_per_type = {}
             self.previous_proportion_of_tasks = {}
 
@@ -30,7 +34,7 @@ class AdaptativeTaskAllocation:
             value = max
         return value
 
-    def calculate_task_performance(self, task_type):
+    def calculate_task_performance_method1(self, task_type):
         if not self.previous_proportion_of_tasks:
             return self.config.task_performance_default
         else:
@@ -57,6 +61,19 @@ class AdaptativeTaskAllocation:
             task_performance = scale[0] + medium + (decrement * medium) + proportion_adjustment
             task_performance = self.ensure_scale(task_performance, scale[0], scale[1])
         #print "Task performance %s: %f" % (task_type, task_performance)
+        return task_performance
+
+    def calculate_task_performance_method2(self, task_type):
+        task_performance = 0
+        return task_performance
+
+    def calculate_task_performance(self, task_type):
+        if self.config.task_performance_method == "1":
+            task_performance = self.calculate_task_performance_method1(task_type)
+        if self.config.task_performance_method == "2":
+            task_performance = self.calculate_task_performance_method2(task_type)
+        else:
+            task_performance = 0
         return task_performance
 
     def calculate_stimulus(self, task_type):
