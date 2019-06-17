@@ -22,3 +22,7 @@ maximum = 1
 scale = 0.0-0.5
 default = 1
 proportion_adjustment = 0.1
+
+[Simulator]
+simulations = 20
+iterations = 50

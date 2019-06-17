@@ -222,13 +222,9 @@ def generate_stages():
 # Load config file
 config = Config()
 
-# Get user input
-#number_of_users = int(raw_input("Number of users: "))
-#num_users = 5
-#iterations = int(raw_input("Select number of iterations: "))
-num_iterations = 50
-#adaptative = select_greedy_or_adaptative(raw_input("Greedy or adaptative task allocation? (g/a): "))
-num_simulations = 20
+config.load_simulator_parametters()
+num_iterations = config.iterations
+num_simulations = config.simulations
 
 # Create stages
 stages = []
