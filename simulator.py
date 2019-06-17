@@ -146,13 +146,16 @@ def asign_random_task(user, tasks):
     #print "selecting: %s" % (selected_task.name)
     selected_task.assign(user.name)
     user.assign(selected_task)
+    return selected_task.skill
 
 def simulate_user_behavior(user, recommender):
     #print_tasks(recommender.github.tasks)
     if not user.working_on_task:
         recommended_tasks = recommender.recommend_tasks(user)
         if recommended_tasks:
-            asign_random_task(user, recommended_tasks)
+            selected_task_type = asign_random_task(user, recommended_tasks)
+            if recommender.adaptative == True:
+                user.task_allocation.update_tasks_performance_method2(recommended_tasks, selected_task_type)
     else:
         user.work_on_task()
     #print_tasks(recommender.github.tasks)

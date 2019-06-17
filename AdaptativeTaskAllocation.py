@@ -141,10 +141,33 @@ class AdaptativeTaskAllocation:
             for skill in self.config.skills:
                 self.proportion_of_tasks_per_type[skill] = self.count_tasks_of_type(skill, tasks) / total_number_of_tasks
 
-    def update_tasks_performance(self, tasks):
+    def initialize_task_performance(self):
+        for skill in self.config.skills:
+            self.tasks_performance[skill] = self.config.task_performance_default
+
+    def update_tasks_performance_method1(self, tasks):
         self.update_tasks_per_type(tasks)
         for skill in self.config.skills:
             self.tasks_performance[skill] = self.calculate_task_performance(skill)
+
+    def update_tasks_performance_method2(self, tasks, selected_task_type):
+        if self.task_performance_mode2:
+            unselected_tasks = {}
+            for skill in self.config.skills:
+                unselected_tasks[skill] = 0
+            for task in tasks:
+                unselected_tasks[task.skill] += 1
+            for skill in self.config.skills:
+                efficiency_decrement = self.config.task_performance_proportion_adjustment * unselected_tasks[skill]
+                #print efficiency_decrement
+                self.tasks_performance[skill] -=  efficiency_decrement
+
+    def update_tasks_performance(self, tasks):
+        if not self.task_performance_mode2:
+            self.update_tasks_performance_method1(tasks)
+        else:
+            if not self.tasks_performance:
+                self.initialize_task_performance()
 
     def initialize_stimuli(self):
         for skill in self.config.skills:
