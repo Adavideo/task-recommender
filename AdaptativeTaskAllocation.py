@@ -137,7 +137,7 @@ class AdaptativeTaskAllocation:
         for skill in self.config.skills:
             self.tasks_performance[skill] = self.calculate_task_performance_method1(skill)
 
-    def update_tasks_performance_method2(self, tasks, selected_task_type):
+    def update_tasks_performance_method2(self, tasks):
         if not self.task_performance_mode1:
             unselected_tasks = {}
             for skill in self.config.skills:

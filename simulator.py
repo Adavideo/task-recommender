@@ -74,22 +74,22 @@ def simulate_user_behavior(user, recommender):
         if recommended_tasks:
             selected_task_type = asign_random_task(user, recommended_tasks)
             if recommender.adaptative == True:
-                user.task_allocation.update_tasks_performance_method2(recommended_tasks, selected_task_type)
+                user.task_allocation.update_tasks_performance_method2(recommended_tasks)
     else:
         user.work_on_task()
 
-def simulate_iterations(iterations, stage, recommender):
-    for i in range(1, iterations+1):
+def simulate_iterations(stage, recommender):
+    for i in range(1, config.iterations+1):
         recommender.github.update()
         for user in stage.users:
             simulate_user_behavior(user, recommender)
 
-def run_simulation(num_iterations, adaptative_mode, stage):
+def run_simulation(adaptative_mode, stage):
     # Initialize recommender
     recommender = initialize_recommender(adaptative_mode, stage.tasks_probabilities)
 
     # Run the simulation
-    simulate_iterations(num_iterations, stage, recommender)
+    simulate_iterations(stage, recommender)
 
     # Reset the users at the end of each simulation
     stage.reset_users()
@@ -98,10 +98,10 @@ def run_simulation(num_iterations, adaptative_mode, stage):
     statistics = get_statistics(recommender)
     return statistics
 
-def run_several_simulations(num_simulations, num_iterations, adaptative_mode, stage):
+def run_several_simulations(adaptative_mode, stage):
     statistics = []
-    for i in range(1, num_simulations+1):
-        result = run_simulation(num_iterations, adaptative_mode, stage)
+    for i in range(1, config.simulations+1):
+        result = run_simulation(adaptative_mode, stage)
         statistics.append(result)
     return statistics
 
@@ -137,9 +137,9 @@ for stage in stages:
     print "\nSimulation for %s" % stage.description()
     # Runing the simulations for adaptative and greedy task allocation
     adaptative_mode = False
-    greedy_statistics = run_several_simulations(config.simulations, config.iterations, adaptative_mode, stage)
+    greedy_statistics = run_several_simulations(adaptative_mode, stage)
     adaptative_mode = True
-    adaptative_statistics = run_several_simulations(config.simulations, config.iterations, adaptative_mode, stage)
+    adaptative_statistics = run_several_simulations(adaptative_mode, stage)
 
     # Comparing the results of greedy and adaptative simulations
     results = compare_statistics(greedy_statistics, adaptative_statistics)

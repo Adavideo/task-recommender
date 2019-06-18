@@ -23,8 +23,8 @@ def select_task(task):
     print task.description
     github_connector.assign_task(task, user.name)
 
-def update_task_performance(selected_task, recommended_tasks):
-    user.task_allocation.update_tasks_performance_method2(recommended_tasks, selected_task.skill)
+def update_task_performance(recommended_tasks):
+    user.task_allocation.update_tasks_performance_method2(recommended_tasks)
 
 def menu_tasks():
     print "-" * 50 + "\n"
@@ -39,7 +39,7 @@ def menu_tasks():
         if int(selection) < counter:
             selected_task = recommended_tasks[selection-1]
             select_task(selected_task)
-            update_task_performance(selected_task, recommended_tasks)
+        update_task_performance(recommended_tasks)    
     else:
         print "Sorry. No tasks."
 
