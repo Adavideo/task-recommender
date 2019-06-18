@@ -35,8 +35,5 @@ class Stage(object):
             self.users.append(new_user)
 
     def description(self):
-        #description = "Stage with users " + self.users
         description = "Stage with users: %s - tasks probabilities: %s \n" % (self.user_types, self.tasks_probabilities)
-        #for user in self.users:
-        #    description += "%s %s\n" % (user.name, user.skills_thresholds)
         return description

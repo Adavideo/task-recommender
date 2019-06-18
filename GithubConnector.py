@@ -30,7 +30,6 @@ class GithubConnector:
 
     def get_total_contributors(self):
         contributors = self.repo.get_contributors()
-        #print contributors.totalCount
         count = 0
         for _ in contributors:
             count += 1

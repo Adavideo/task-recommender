@@ -9,12 +9,21 @@ class AdaptativeTaskAllocation:
             self.config.load_recommender_parametters()
             self.tasks_stimuli = {}
             self.tasks_performance = {}
-            if self.config.task_performance_method == "2":
-                self.task_performance_mode2 = True
+            if self.config.task_performance_method == "1":
+                self.task_performance_mode1 = True
             else:
-                self.task_performance_mode2 = False
+                self.task_performance_mode1 = False
             self.proportion_of_tasks_per_type = {}
             self.previous_proportion_of_tasks = {}
+
+    def initialize_task_performance(self):
+        for skill in self.config.skills:
+            self.tasks_performance[skill] = self.config.task_performance_default
+
+    def initialize_stimuli(self):
+        for skill in self.config.skills:
+            self.tasks_stimuli[skill] = self.config.default_stimulus
+
 
     # Functions that make the calculations
 
@@ -57,25 +66,12 @@ class AdaptativeTaskAllocation:
             task_performance = self.ensure_scale(task_performance, scale[0], scale[1])
         return task_performance
 
-    def calculate_task_performance_method2(self, task_type):
-        task_performance = 0
-        return task_performance
-
-    def calculate_task_performance(self, task_type):
-        if self.config.task_performance_method == "1":
-            task_performance = self.calculate_task_performance_method1(task_type)
-        if self.config.task_performance_method == "2":
-            task_performance = self.calculate_task_performance_method2(task_type)
-        else:
-            task_performance = 0
-        return task_performance
-
     def calculate_stimulus(self, task_type):
         # s(t+1) = s(t) + delta - ( alfa * N_act / N )
         # delta : increase in stimulus intensity per unit time
         # alfa : scale factor measuring the efficiency of task performance
-        #N: number of potentially active individuals in the colony
-        #N_act : number of active individuals
+        # N: number of potentially active individuals in the colony
+        # N_act : number of active individuals
         stimulus = self.tasks_stimuli[task_type]
         delta = self.config.increase_in_stimulus_intensity
         alfa = self.tasks_performance[task_type]
@@ -84,11 +80,8 @@ class AdaptativeTaskAllocation:
         else:
             N = self.total_contributors
         N_act = self.active_contributors
-        #print "contributors. total: %d  active: %d." % (N, N_act)
         new_stimulus = stimulus + delta - (alfa * N_act / N )
-        #print "%s stimulus = %s + %s - (%s * %s / %s) = %s" % (task_type, stimulus, delta, alfa, N_act, N, new_stimulus)
         new_stimulus = self.ensure_scale(new_stimulus, self.config.minimum_stimulus, self.config.maximum_stimulus)
-        #print "stimulus %s: %f" % (task_type, new_stimulus)
         return new_stimulus
 
     def calculate_active_contributors(self, tasks):
@@ -97,8 +90,6 @@ class AdaptativeTaskAllocation:
             if task.assigned_to and task.assigned_to not in contributors:
                 contributors.append(task.assigned_to)
         return len(contributors)
-
-    # util
 
     def count_tasks_of_type(self, task_type, tasks):
         number_of_tasks = 0.0
@@ -133,17 +124,21 @@ class AdaptativeTaskAllocation:
             for skill in self.config.skills:
                 self.proportion_of_tasks_per_type[skill] = self.count_tasks_of_type(skill, tasks) / total_number_of_tasks
 
-    def initialize_task_performance(self):
-        for skill in self.config.skills:
-            self.tasks_performance[skill] = self.config.task_performance_default
+    def update_stimuli(self):
+        if not self.tasks_stimuli:
+            self.initialize_stimuli()
+        else:
+            for skill in self.config.skills:
+                new_stimulus = self.calculate_stimulus(skill)
+                self.tasks_stimuli[skill] = new_stimulus
 
     def update_tasks_performance_method1(self, tasks):
         self.update_tasks_per_type(tasks)
         for skill in self.config.skills:
-            self.tasks_performance[skill] = self.calculate_task_performance(skill)
+            self.tasks_performance[skill] = self.calculate_task_performance_method1(skill)
 
     def update_tasks_performance_method2(self, tasks, selected_task_type):
-        if self.task_performance_mode2:
+        if not self.task_performance_mode1:
             unselected_tasks = {}
             for skill in self.config.skills:
                 unselected_tasks[skill] = 0
@@ -153,28 +148,18 @@ class AdaptativeTaskAllocation:
                 efficiency_decrement = self.config.task_performance_proportion_adjustment * unselected_tasks[skill]
                 self.tasks_performance[skill] -=  efficiency_decrement
 
-    def update_tasks_performance(self, tasks):
-        if not self.task_performance_mode2:
+    def update_task_performance(self, tasks):
+        if self.task_performance_mode1:
             self.update_tasks_performance_method1(tasks)
         else:
+            # With the method 2, it calculates and updates the task performance when the user select the tasks.
+            # But we check here that the task performance has been initialiced.
             if not self.tasks_performance:
                 self.initialize_task_performance()
 
-    def initialize_stimuli(self):
-        for skill in self.config.skills:
-            self.tasks_stimuli[skill] = self.config.default_stimulus
-
-    def update_stimuli(self):
-        if not self.tasks_stimuli:
-            self.initialize_stimuli()
-        else:
-            for skill in self.config.skills:
-                new_stimulus = self.calculate_stimulus(skill)
-                self.tasks_stimuli[skill] = new_stimulus
-
     def update(self, tasks, total_contributors):
         self.update_contributors(tasks, total_contributors)
-        self.update_tasks_performance(tasks)
+        self.update_task_performance(tasks)
         self.update_stimuli()
 
 
@@ -184,9 +169,7 @@ class AdaptativeTaskAllocation:
         if skill == "":
             return False
         task_threshold = self.skills_thresholds[skill]
-        #print "threshold for skill: %f" % task_threshold
         stimulus = self.tasks_stimuli[skill]
-        #print "Stimulus for task %s: %f" % (skill, stimulus)
         r = random.randint(0,100) / 100.0
         if r < self.response_probability(task_threshold, stimulus):
             return True

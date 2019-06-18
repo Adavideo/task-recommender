@@ -28,7 +28,6 @@ class Recommender:
         return recommended_tasks
 
     def update_task_allocation(self, task_allocation, tasks):
-        # TODO: Only update when it has passed more time that it is estrablished in the config file
         total_contributors = self.github.get_total_contributors()
         task_allocation.update(tasks, total_contributors)
 

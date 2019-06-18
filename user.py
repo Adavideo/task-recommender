@@ -21,7 +21,6 @@ class User(object):
         try:
             for skill in skills:
                 self.skills_thresholds[skill] = float(user_file['user_skills'][skill])
-                #print "==== skills from user file: %s = %s" % (skill, self.skills_thresholds[skill])
         except KeyError:
             raise Exception("User file needed or malformed.")
         self.initialize_task_allocation()
@@ -37,7 +36,6 @@ class User(object):
         for skill in self.skills:
             has_the_skill = new_user_skills[skill]
             self.skills_thresholds[skill] = self.calculate_threshold(has_the_skill)
-            #print "Umbral de %s: %f" % (skill, self.skills_thresholds[skill])
         self.initialize_task_allocation()
 
     def assign(self, task):
@@ -51,7 +49,6 @@ class User(object):
 
     def increment_skill(self, skill):
         threshold = self.skills_thresholds[skill]
-        #print "threshold %s = %f" % (skill, threshold)
         if threshold > 0:
             self.skills_thresholds[skill] = threshold - 0.05
         if self.skills_thresholds[skill] < 0:
@@ -62,4 +59,3 @@ class User(object):
         self.increment_skill(skill)
         self.working_on_task.close_task()
         self.working_on_task = ""
-        #print "%s skills: %s" % (self.name, self.skills_thresholds)
