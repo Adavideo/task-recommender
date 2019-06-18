@@ -38,6 +38,8 @@ class Recommender:
         if not unfiltered_tasks:
             return []
         recommended_tasks = []
-        #while not recommended_tasks:
-        recommended_tasks = self.filter_tasks(user, unfiltered_tasks)
+        count = 0
+        while not recommended_tasks and count < 5:
+            recommended_tasks = self.filter_tasks(user, unfiltered_tasks)
+            count += 1
         return recommended_tasks
