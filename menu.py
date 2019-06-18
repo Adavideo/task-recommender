@@ -17,22 +17,29 @@ def menu_config_user_skills():
     user_skills = select_user_skills()
     user.initialize_new_skills(user_skills)
 
+def select_task(task):
+    print "You have selected the task %s" % task.name
+    print "Here is the link: " + task.link
+    print task.description
+    github_connector.assign_task(task, user.name)
+
+def update_task_performance(selected_task, recommended_tasks):
+    user.task_allocation.update_tasks_performance_method2(recommended_tasks, selected_task.skill)
+
 def menu_tasks():
     print "-" * 50 + "\n"
-    tasks = recommender.recommend_tasks(user)
-    if tasks:
+    recommended_tasks = recommender.recommend_tasks(user)
+    if recommended_tasks:
         counter = 1
-        for task in tasks:
+        for task in recommended_tasks:
             print "%d - %s. Skill required: %s" % (counter, task.name, task.skill)
             counter += 1
         print "%d - Go back to main menu" % counter
         selection = int(raw_input("Select an option: "))
         if int(selection) < counter:
-            task = tasks[selection-1]
-            print "You have selected the task %s" % task.name
-            print "Here is the link: " + task.link
-            print task.description
-            github_connector.assign_task(task, user.name)
+            selected_task = recommended_tasks[selection-1]
+            select_task(selected_task)
+            update_task_performance(selected_task, recommended_tasks)
     else:
         print "Sorry. No tasks."
 
