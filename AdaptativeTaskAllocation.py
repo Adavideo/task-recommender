@@ -24,7 +24,6 @@ class AdaptativeTaskAllocation:
         # T_0i (s) = s^n / s^n + 0i^n
         n = self.config.nonlinearity_parameter
         response_probability = (stimulus ** n) / ((stimulus ** n) + threshold ** n)
-        #print "threshold: %f  stimulus: %f  Response probability: %s" % (threshold, stimulus, response_probability)
         return response_probability
 
     def ensure_scale(self, value, min, max):
@@ -43,11 +42,8 @@ class AdaptativeTaskAllocation:
             scale = self.config.task_performance_scale
             medium = (scale[1] - scale[0]) / 2
             decrement = previous_proportion - current_proportion
-            #print "%s - previous: %f  current: %f  decrement: %f " % (task_type, previous_proportion_of_tasks, current_proportion_of_tasks, decrement)
-            #print "task performance %s = %f + %f + (%f * %f)" % (task_type, scale[0],medium,decrement ,medium  )
             types_of_tasks = len(self.config.skills)
             equal_proportion = 1.0/types_of_tasks
-            #print "%s - equal %f  current %f" % (task_type, equal_proportion, current_proportion)
             proportion_adjustment = self.config.task_performance_proportion_adjustment
             # if there is too many tasks of some type, the performance is bad
             if (current_proportion > equal_proportion):
@@ -57,10 +53,8 @@ class AdaptativeTaskAllocation:
                 proportion_adjustment = proportion_adjustment
             else:
                 proportion_adjustment = 0.0
-            #print "%s total proportion adjustment: %f" % (task_type, proportion_adjustment)
             task_performance = scale[0] + medium + (decrement * medium) + proportion_adjustment
             task_performance = self.ensure_scale(task_performance, scale[0], scale[1])
-        #print "Task performance %s: %f" % (task_type, task_performance)
         return task_performance
 
     def calculate_task_performance_method2(self, task_type):
@@ -111,7 +105,6 @@ class AdaptativeTaskAllocation:
         for task in tasks:
             if task.skill == task_type:
                 number_of_tasks += 1
-        #print "Number of tasks of type %s: %f" % (task_type, number_of_tasks)
         return number_of_tasks
 
 
@@ -127,7 +120,6 @@ class AdaptativeTaskAllocation:
             self.total_contributors = total_contributors
         else:
             self.total_contributors = self.active_contributors
-        #print "Update contributors. Total: %d  Active: %d " % (self.total_contributors, self.active_contributors)
 
     def update_tasks_per_type(self, tasks):
         if self.proportion_of_tasks_per_type:
@@ -159,7 +151,6 @@ class AdaptativeTaskAllocation:
                 unselected_tasks[task.skill] += 1
             for skill in self.config.skills:
                 efficiency_decrement = self.config.task_performance_proportion_adjustment * unselected_tasks[skill]
-                #print efficiency_decrement
                 self.tasks_performance[skill] -=  efficiency_decrement
 
     def update_tasks_performance(self, tasks):

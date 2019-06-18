@@ -27,3 +27,4 @@ proportion_adjustment = 0.1
 [Simulator]
 simulations = 20
 iterations = 50
+new_tasks = 1

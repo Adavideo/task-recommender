@@ -26,7 +26,7 @@ class Config:
         self.increase_in_stimulus_intensity = float(config['Stimuli']['increase_in_intensity'])
         self.minimum_stimulus = float(config['Stimuli']['minimum'])
         self.maximum_stimulus = float(config['Stimuli']['maximum'])
-        # [TaskPerformance]        
+        # [TaskPerformance]
         task_performance_scale = config['TaskPerformance']['scale'].split("-")
         self.task_performance_scale = [float(task_performance_scale[0]),float(task_performance_scale[1])]
         self.task_performance_default = float(config['TaskPerformance']['default'])
@@ -35,3 +35,4 @@ class Config:
     def load_simulator_parametters(self):
         self.iterations = int(self.config['Simulator']['iterations'])
         self.simulations = int(self.config['Simulator']['simulations'])
+        self.new_tasks_per_iteration = int(self.config['Simulator']['new_tasks'])

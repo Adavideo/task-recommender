@@ -3,28 +3,25 @@ from task import Task
 
 class GithubSimulator:
 
-    def __init__(self, skills, number_of_tasks, number_of_contributors, tasks_probabilities):
+    def __init__(self, config, number_of_contributors, tasks_probabilities):
         self.last_update = ""
-        self.skills = skills
+        self.skills = config.skills
         self.tasks_probabilities = tasks_probabilities
-        self.tasks = self.tasks_mockup(number_of_tasks)
+        self.tasks = self.tasks_mockup(config.tasks_number * 2)
         self.number_of_contributors = number_of_contributors
+        self.new_tasks_per_iteration = config.new_tasks_per_iteration
 
     def task_roulete(self):
-        #print self.tasks_probabilities
         r = random.randint(0,100)
-        #print r
         added_probability = 0
         skill_index = 0
         for probability in self.tasks_probabilities:
             added_probability += probability
             if r <= added_probability:
                 task_type = self.skills[skill_index]
-                #print "selected: %s" % task_type
                 break
             else:
                 skill_index += 1
-        #print "Returning %s" % task_type
         return task_type
 
     def mock_task(self, task_number):
@@ -41,25 +38,14 @@ class GithubSimulator:
             tasks.append(task)
         return tasks
 
-    def print_tasks(self):
-        for task in self.tasks:
-            if task.not_assigned():
-                print "%s %s %s" % (task.name, task.skill, task.state)
-            else:
-                print "%s %s %s - assigned to: %s" % (task.name, task.skill, task.state, task.assigned_to)
-        print "-"*10
-
     def add_new_task(self):
         task_number = len(self.tasks) + 1
         new_task = self.mock_task(task_number)
-        #print "tareas antes: %d" % len(self.tasks)
-        #self.print_tasks()
         self.tasks.append(new_task)
-        #print "tareas despues: %d" % len(self.tasks)
-        #self.print_tasks()
 
     def update(self):
-        self.add_new_task()
+        for i in range(0, self.new_tasks_per_iteration):
+            self.add_new_task()
 
     def import_tasks(self):
         open_tasks = []
