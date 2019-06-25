@@ -146,7 +146,7 @@ class AdaptativeTaskAllocation:
                 unselected_tasks[task.skill] += 1
             for skill in self.config.skills:
                 efficiency_decrement = self.config.task_performance_proportion_adjustment * unselected_tasks[skill]
-                self.tasks_performance[skill] -=  efficiency_decrement
+                self.tasks_performance[skill] = self.tasks_performance[skill] + self.config.task_performance_proportion_adjustment - efficiency_decrement
 
     def update_task_performance(self, tasks):
         if self.task_performance_mode1:
