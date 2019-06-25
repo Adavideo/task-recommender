@@ -139,14 +139,17 @@ class AdaptativeTaskAllocation:
 
     def update_tasks_performance_method2(self, tasks):
         if not self.task_performance_mode1:
-            unselected_tasks = {}
+            n_tasks = {}
             for skill in self.config.skills:
-                unselected_tasks[skill] = 0
+                n_tasks[skill] = 0
             for task in tasks:
-                unselected_tasks[task.skill] += 1
+                n_tasks[task.skill] += 1
+            p = self.config.task_performance_proportion_adjustment
             for skill in self.config.skills:
-                efficiency_decrement = self.config.task_performance_proportion_adjustment * unselected_tasks[skill]
-                self.tasks_performance[skill] = self.tasks_performance[skill] + self.config.task_performance_proportion_adjustment - efficiency_decrement
+                # decrement is how much we decrement the task efficiency for the type of task
+                # p (proportion adjustment) is a constant set in the configuration file, used to adjust how much we increment or decrement the efficiency each iteration.
+                decrement = p * n_tasks[skill]
+                self.tasks_performance[skill] = self.tasks_performance[skill] + p - decrement
 
     def update_task_performance(self, tasks):
         if self.task_performance_mode1:
